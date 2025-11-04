@@ -1,0 +1,59 @@
+/* Configuración personalizada de Tailwind y fuentes */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+:root {
+  --color-primary-red: #d32323;
+  /* Rojo vibrante del logo */
+  --color-accent-blue: #00bfff;
+  /* Azul neón para acentos */
+  --color-dark-bg: #101014;
+  /* Fondo oscuro principal */
+  --color-card-bg: #1c1c20;
+  /* Color de tarjeta ligeramente más claro */
+  --color-text-light: #e0e0e0;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--color-dark-bg);
+  /* Patrón de fondo sutil que evoca hexágonos (opcional) */
+  background-image: radial-gradient(#2c2c30 1px, transparent 0);
+  background-size: 40px 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Estilo para el botón de INICIAR SESIÓN con brillo (glow) */
+.btn-primary {
+  background-color: var(--color-primary-red);
+  box-shadow: 0 0 15px rgba(255, 59, 59, 0.7);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #ff5a5a;
+  box-shadow: 0 0 25px rgba(255, 59, 59, 1);
+}
+
+.btn-primary:disabled {
+  background-color: #999;
+  box-shadow: 0 0 15px rgba(153, 153, 153, 0.7);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Estilo para campos en focus con borde neón azul */
+.input-neon:focus {
+  border-color: var(--color-accent-blue);
+  box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+  outline: none;
+}
+
+/* Estilo para el contorno de la tarjeta con brillo azul sutil */
+.card-glow {
+  border: 1px solid transparent;
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
+}

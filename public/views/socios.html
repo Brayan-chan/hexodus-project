@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexodus | Gestión de Socios</title>
+    <!-- Mostrar iconos de Hexodus -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/icon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/icon.png" />
+    <!-- Carga de CSS para socios -->
+    <link rel="stylesheet" href="../assets/css/socios.css">
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de íconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body onload="lucide.createIcons()">
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- 1. BARRA LATERAL DE NAVEGACIÓN (IDÉNTICA AL DASHBOARD) -->
+        <aside class="sidebar fixed z-30 inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out p-4 flex flex-col justify-between">
+            <div class="space-y-6">
+                <!-- Logo Hexodus (Usando la estructura del Dashboard para el tamaño) -->
+                <div class="flex items-center space-x-3 mb-8">
+                    <!-- CONTENEDOR PARA IMAGEN DEL LOGO COMPLETO-->
+                    <div class="h-10 w-10 icon-alerta-rojo flex items-center justify-center">
+                        <img src="../assets/images/icon.png" alt="Logo Hexodus">
+                    </div>
+                    <!-- TEXTO HEXODUS (Ahora text-xl) -->
+                    <span class="text-xl font-bold tracking-widest uppercase" style="color: var(--color-rojo-principal);">HEXODUS</span>
+                </div>
+
+                <!-- Menú Principal (Nombres de módulos simplificados) -->
+                <nav class="space-y-2">
+                    <a href="views/dashboard.html" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                        Dashboard
+                    </a>
+                    <!-- Item Activo: Socios -->
+                    <a href="#" class="nav-link nav-activo flex items-center p-3 rounded-lg text-sm font-medium">
+                        <i data-lucide="users" class="w-5 h-5 mr-3"></i>
+                        Gestión de Socios 
+                    </a>
+                    <a href="ventas.html" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="shopping-cart" class="w-5 h-5 mr-3"></i>
+                        Gestión de Ventas
+                    </a>
+                    <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="package" class="w-5 h-5 mr-3"></i>
+                        Inventario y Productos
+                    </a>
+                    <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="file-text" class="w-5 h-5 mr-3"></i>
+                        Reportes
+                    </a>
+                    <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="lock" class="w-5 h-5 mr-3"></i>
+                        Gestión de Usuarios
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Sección Inferior: Configuración -->
+            <div class="pb-4 border-t border-gray-800 pt-4">
+                 <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                    Configuración
+                </a>
+            </div>
+        </aside>
+
+        <!-- Overlay para móvil y botón de toggle (para responsividad) -->
+        <div id="backdrop" class="fixed inset-0 bg-black opacity-50 z-20 hidden md:hidden"></div>
+        <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2 rounded-lg" style="background-color: var(--color-tarjeta-fondo);">
+            <i data-lucide="menu" class="w-6 h-6" style="color: var(--color-azul-acento);"></i>
+        </button>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="flex-1 md:ml-64 p-4 md:p-8 space-y-8">
+            <!-- ENCABEZADO SUPERIOR (IDÉNTICO AL DASHBOARD) -->
+            <header class="encabezado-dashboard flex items-center justify-between p-4 rounded-xl sticky top-0 z-10">
+                <h1 class="text-2xl font-bold" style="color: var(--color-azul-acento);">Gestión de Socios (RF07)</h1>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm hidden sm:block" id="fecha-hora-header">Admin. | 07/10/2025 | 12:10 AM</span>
+                    <i data-lucide="bell" class="w-6 h-6 text-gray-400 hover:text-white transition duration-200 cursor-pointer" title="Notificaciones"></i>
+                    <i data-lucide="log-out" class="w-6 h-6 text-gray-400 hover:text-white transition duration-200 cursor-pointer" title="Cerrar Sesión"></i>
+                </div>
+            </header>
+
+            <!-- CONTENIDO DE GESTIÓN -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+                <!-- COLUMNA 1: FILTROS Y ACCIÓN (1/4 del ancho) -->
+                <div class="lg:col-span-1 space-y-6">
+
+                    <!-- MÓDULO DE ACCIÓN PRINCIPAL: AGREGAR SOCIO (RF12) -->
+                    <div class="tarjeta p-6 flex flex-col items-center">
+                        <i data-lucide="user-plus" class="w-12 h-12 mb-4" style="color: var(--color-rojo-principal);"></i>
+                        <h2 class="text-xl font-semibold mb-4">Alta de Socio (RF12)</h2>
+                        <p class="text-sm text-center mb-4 text-gray-400">Registra y asigna membresía a un nuevo cliente.</p>
+                        <button id="btn-agregar-socio" class="btn-principal w-full py-3 font-bold rounded-lg uppercase transition duration-300">
+                            <span class="flex items-center justify-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i> Agregar Nuevo Socio</span>
+                        </button>
+                    </div>
+
+                    <!-- MÓDULO DE ACCIÓN Y FILTROS -->
+                    <div class="tarjeta p-6">
+                        <h2 class="text-xl font-semibold mb-4" style="color: var(--color-azul-acento);">Filtros y Consultas</h2>
+
+                        <!-- Búsqueda Principal (RF07) -->
+                        <div class="mb-4">
+                            <label for="buscar" class="block text-sm font-medium mb-2 text-gray-400">Buscar (Clave, Nombre, Correo)</label>
+                            <div class="relative">
+                                <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                                <input type="text" id="buscar" placeholder="Ej. Juan Pérez o #1024"
+                                       class="input-neon w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
+                            </div>
+                        </div>
+
+                        <!-- Filtro de Estatus -->
+                        <div class="mb-4">
+                            <label for="estatus" class="block text-sm font-medium mb-2 text-gray-400">Filtrar por Estatus</label>
+                            <select id="estatus"
+                                    class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white appearance-none focus:ring-0">
+                                <option value="todos">Todos los Socios</option>
+                                <option value="activo">Membresía Activa</option>
+                                <option value="adeudo">Con Adeudo</option>
+                                <option value="expirado">Expirado/Inactivo</option>
+                            </select>
+                        </div>
+
+                        <!-- Botón de Aplicar Filtros -->
+                        <button class="btn-secundario w-full py-2 mt-2 font-medium rounded-lg uppercase">
+                            Aplicar Filtros
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- COLUMNA 2: TABLA DE SOCIOS (3/4 del ancho) -->
+                <div class="lg:col-span-3">
+                    <div class="tarjeta p-6">
+                        <h2 class="text-xl font-semibold mb-4 flex items-center">
+                            <i data-lucide="list-checks" class="w-6 h-6 mr-2" style="color: var(--color-azul-acento);"></i>
+                            Lista de Socios Activos (RF07)
+                        </h2>
+
+                        <!-- Contenedor de la Tabla con Scroll -->
+                        <div class="overflow-x-auto tabla-scroll">
+                            <table class="min-w-full divide-y divide-gray-700">
+                                <thead class="bg-gray-700">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">Clave</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">Nombre</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">Membresía</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">Vencimiento</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">Estatus de Pago</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-300">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <!-- Fila de Ejemplo 1: Activo y al corriente -->
+                                    <tr class="hover:bg-gray-700 transition duration-200">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">#1024</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Juan López Pérez</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Anual Premium</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-400">15/09/2026</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" style="background-color: rgba(75, 181, 67, 0.2); color: var(--color-exito);">Al Corriente</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                                            <button class="text-gray-400 hover:text-yellow-400" title="Editar Socio (RF08)"><i data-lucide="square-pen" class="w-5 h-5"></i></button>
+                                            <button class="text-gray-400 hover:text-red-500" title="Eliminar Socio (RF13)"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                        </td>
+                                    </tr>
+                                    <!-- Fila de Ejemplo 2: Con Adeudo -->
+                                    <tr class="hover:bg-gray-700 transition duration-200">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">#1055</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Andrea González</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Mensual</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-400">01/10/2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" style="background-color: rgba(255, 0, 0, 0.2); color: var(--color-peligro);">Adeudo</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                                            <button class="text-gray-400 hover:text-yellow-400" title="Editar Socio (RF08)"><i data-lucide="square-pen" class="w-5 h-5"></i></button>
+                                            <button class="text-gray-400 hover:text-red-500" title="Eliminar Socio (RF13)"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                        </td>
+                                    </tr>
+                                    <!-- Fila de Ejemplo 3: Próximo a vencer -->
+                                    <tr class="hover:bg-gray-700 transition duration-200">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">#1080</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Carlos Ortíz</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Trimestral</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-yellow-400">10/10/2025</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" style="background-color: rgba(255, 215, 0, 0.2); color: var(--color-alerta);">Próx. Venc.</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+                                            <button class="text-gray-400 hover:text-yellow-400" title="Editar Socio (RF08)"><i data-lucide="square-pen" class="w-5 h-5"></i></button>
+                                            <button class="text-gray-400 hover:text-red-500" title="Eliminar Socio (RF13)"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                        </td>
+                                    </tr>
+                                    <!-- Aquí iría el resto de la tabla... -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL DE AGREGAR NUEVO SOCIO (RF12) -->
+    <div id="modal-agregar-socio" class="fixed inset-0 hidden modal-fondo z-50 overflow-y-auto">
+        <div class="flex items-start justify-center min-h-screen pt-12 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0"></div>
+            </div>
+
+            <!-- Contenido del Modal -->
+            <div class="inline-block tarjeta modal-contenido overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-xl sm:w-full my-8 text-left">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6 border-b pb-4 border-gray-700">
+                        <h3 class="text-2xl font-bold" style="color: var(--color-rojo-principal);">
+                            <i data-lucide="user-plus" class="inline w-6 h-6 mr-2"></i> Registrar Nuevo Socio (RF12)
+                        </h3>
+                        <button id="btn-cerrar-modal" class="text-gray-400 hover:text-white transition duration-200">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+
+                    <form>
+                        <!-- SECCIÓN 1: DATOS PERSONALES -->
+                        <h4 class="text-lg font-semibold mb-3 text-gray-300 flex items-center"><i data-lucide="user" class="w-5 h-5 mr-2" style="color: var(--color-azul-acento);"></i> Información Personal</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label for="nombre-socio" class="block text-sm font-medium mb-1 text-gray-400">Nombre Completo <span class="text-red-500">*</span></label>
+                                <input type="text" id="nombre-socio" required
+                                       class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
+                            </div>
+                            <div>
+                                <label for="correo-socio" class="block text-sm font-medium mb-1 text-gray-400">Correo Electrónico <span class="text-red-500">*</span></label>
+                                <input type="email" id="correo-socio" required
+                                       class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
+                            </div>
+                            <div>
+                                <label for="telefono-socio" class="block text-sm font-medium mb-1 text-gray-400">Número de Teléfono</label>
+                                <input type="tel" id="telefono-socio"
+                                       class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
+                            </div>
+                            <div>
+                                <label for="direccion-socio" class="block text-sm font-medium mb-1 text-gray-400">Dirección</label>
+                                <input type="text" id="direccion-socio"
+                                       class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
+                            </div>
+                        </div>
+
+                        <!-- SECCIÓN 2: ASIGNACIÓN DE MEMBRESÍA -->
+                        <h4 class="text-lg font-semibold mb-3 text-gray-300 flex items-center"><i data-lucide="credit-card" class="w-5 h-5 mr-2" style="color: var(--color-azul-acento);"></i> Asignar Membresía (RF09)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                            <div>
+                                <label for="membresia" class="block text-sm font-medium mb-1 text-gray-400">Tipo de Membresía <span class="text-red-500">*</span></label>
+                                <select id="membresia" required
+                                        class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white appearance-none focus:ring-0">
+                                    <option value="">Selecciona una...</option>
+                                    <!-- Opciones de Membresía de Ejemplo (RF09) -->
+                                    <option value="premium">Anual Premium ($12,000 MXN)</option>
+                                    <option value="trimestral">Trimestral ($3,500 MXN)</option>
+                                    <option value="mensual">Mensual ($1,400 MXN)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="fecha-inicio" class="block text-sm font-medium mb-1 text-gray-400">Fecha de Inicio <span class="text-red-500">*</span></label>
+                                <input type="date" id="fecha-inicio" required
+                                       class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="flex justify-end space-x-4 pt-4 border-t border-gray-700">
+                            <button type="button" id="btn-cancelar-registro" class="btn-secundario px-6 py-2 rounded-lg font-bold uppercase">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn-principal px-6 py-2 rounded-lg font-bold uppercase">
+                                REGISTRAR Y ASIGNAR
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/socios.js"></script>
+</body>
+</html>
+
