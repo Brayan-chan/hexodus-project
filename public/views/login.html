@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexodus | Iniciar Sesión</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/icon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icon.png" />
+    <!-- Carga de CSS para el login -->
+    <link rel="stylesheet" href="/assets/css/login.css">
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <!-- Tarjeta de Formulario Flotante -->
+    <div class="w-full max-w-md p-8 sm:p-10 bg-gray-800 rounded-2xl card-glow transform transition-all duration-300">
+        
+        <!-- Logo (Imagen del logo Hexodus) -->
+        <div class="flex justify-center mb-6">
+            <img src="assets/images/icon.png" alt="Logo de Hexodus" class="h-16 w-16" />
+        </div>
+
+        <!-- Título -->
+        <h1 class="text-3xl font-extrabold text-center mb-8 tracking-wider text-white">
+            INICIAR SESIÓN
+        </h1>
+
+        <!-- Mensajes de estado -->
+        <div id="errorMessage" class="mb-4 p-3 bg-red-900 text-red-200 rounded-lg hidden" role="alert"></div>
+        <div id="successMessage" class="mb-4 p-3 bg-green-900 text-green-200 rounded-lg hidden" role="alert"></div>
+        <div id="loadingMessage" class="mb-4 p-3 bg-blue-900 text-blue-200 rounded-lg hidden flex items-center gap-2" role="status">
+            <span class="animate-spin">⏳</span>
+            <span>Conectando...</span>
+        </div>
+
+        <form id="loginForm">
+            <!-- Campo de Usuario/Correo Electrónico -->
+            <div class="mb-5">
+                <label for="email" class="block text-sm font-medium mb-2 text-gray-400">Usuario o Correo Electrónico</label>
+                <input type="email" id="email" name="email" placeholder="ejemplo@hexodus.com"
+                       class="input-neon w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:ring-0"
+                       required>
+            </div>
+
+            <!-- Campo de Contraseña -->
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium mb-2 text-gray-400">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="********"
+                       class="input-neon w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:ring-0"
+                       required>
+                <!-- Texto de ayuda -->
+                <p class="mt-2 text-xs text-gray-500">
+                    Mínimo 8 caracteres, mayúscula, número y símbolo.
+                </p>
+            </div>
+
+            <!-- Captcha Dinámico -->
+            <div class="mb-6 flex items-center justify-start py-2">
+                <div class="flex items-center space-x-3 bg-gray-900 p-3 rounded-lg border border-gray-700">
+                    <input type="checkbox" id="captcha" name="captcha" required
+                           class="h-5 w-5 rounded border-gray-600 bg-gray-800 text-blue-500 focus:ring-blue-500 cursor-pointer"
+                           style="color: var(--color-accent-blue);">
+                    <label for="captcha" class="text-sm font-medium text-gray-400 select-none">
+                        No soy un robot
+                    </label>
+                </div>
+            </div>
+
+            <!-- Botón de login -->
+            <button type="submit" id="loginBtn"
+                class="btn-primary w-full py-3 font-bold text-lg rounded-lg text-white uppercase tracking-widest transition duration-300"
+                style="background-color: var(--color-primary-red);">
+                INICIAR SESIÓN
+            </button>
+        </form>
+
+        <!-- Enlace de Recuperación de Contraseña -->
+        <div class="mt-6 text-center">
+            <a href="#" class="text-sm font-medium transition duration-300 hover:underline"
+               style="color: var(--color-accent-blue);">
+                ¿Olvidaste tu contraseña?
+            </a>
+        </div>
+    </div>
+
+    <!-- Importar módulos de autenticación y conectar formulario con API -->
+    <script type="module">
+        import { login } from '/assets/js/auth.js';
+        import { AuthStorage } from '/assets/js/config.js';
+
+        // Si ya está autenticado, redirigir al dashboard
+        if (AuthStorage.isAuthenticated()) {
+            window.location.href = '/dashboard';
+        }
+
+        const loginForm = document.getElementById('loginForm');
+
+        // Manejar envío del formulario
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const captcha = document.getElementById('captcha').checked;
+
+            if (!captcha) {
+                await Swal.fire({
+                    title: 'Error',
+                    text: 'Por favor verifica que no eres un robot',
+                    icon: 'error',
+                    confirmButtonColor: '#FF3B3B'
+                });
+                return;
+            }
+
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            
+            try {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="loading-spinner mr-2"></i>Iniciando sesión...';
+
+                const response = await login(email, password);
+                
+                await Swal.fire({
+                    title: '¡Bienvenido!',
+                    text: 'Inicio de sesión exitoso',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                window.location.href = '/dashboard';
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: error.message || 'Error al iniciar sesión',
+                    icon: 'error',
+                    confirmButtonColor: '#FF3B3B'
+                });
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+            }
+        });
+    </script>
+</body>
+</html>

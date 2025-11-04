@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexodus | Dashboard Principal</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/icon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icon.png" />
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar fixed z-30 inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out p-4 flex flex-col justify-between">
+        <div class="space-y-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <img src="/assets/images/icon.png" alt="Logo Hexodus" class="h-10 w-10 icon-alerta-rojo" />
+                <span class="text-xl font-bold tracking-widest uppercase" style="color: var(--color-rojo-principal);">Hexodus</span>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="/dashboard" class="nav-link nav-activo flex items-center p-3 rounded-lg text-sm font-medium">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                    Dashboard
+                </a>
+                <a href="/socios" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="users" class="w-5 h-5 mr-3"></i>
+                    Gestión de Socios 
+                </a>
+                <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="shopping-cart" class="w-5 h-5 mr-3"></i>
+                    Gestión de Ventas
+                </a>
+                <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="package" class="w-5 h-5 mr-3"></i>
+                    Inventario y Productos
+                </a>
+                <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="file-text" class="w-5 h-5 mr-3"></i>
+                    Reportes
+                </a>
+                <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="lock" class="w-5 h-5 mr-3"></i>
+                    Gestión de Usuarios
+                </a>
+            </nav>
+        </div>
+
+        <div class="pb-4 border-t border-gray-800 pt-4">
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                Configuración 
+            </a>
+        </div>
+    </aside>
+
+    <div id="backdrop" class="fixed inset-0 bg-black opacity-50 z-20 hidden md:hidden"></div>
+    
+    <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2 rounded-lg" style="background-color: var(--color-tarjeta-fondo);">
+        <i data-lucide="menu" class="w-6 h-6" style="color: var(--color-azul-acento);"></i>
+    </button>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 md:ml-64 p-4 md:p-8 space-y-8">
+        
+        <!-- ENCABEZADO -->
+        <header class="encabezado-dashboard flex items-center justify-between p-4 rounded-xl sticky top-0 z-10">
+            <div>
+                <h2 class="text-xl font-semibold">Bienvenido, <span id="userNameDisplay" style="color: var(--color-rojo-principal);">Usuario</span></h2>
+                <p id="fecha-hora" class="text-sm" style="color: var(--color-texto-gris);">--/--/---- | --:-- --</p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full hover:bg-gray-800 transition duration-200 relative">
+                    <i data-lucide="bell" class="w-6 h-6" style="color: var(--color-azul-acento);"></i>
+                    <span class="absolute top-0 right-0 h-2 w-2 rounded-full" style="background-color: var(--color-rojo-principal);"></span>
+                </button>
+                <button id="logoutBtn" class="p-2 rounded-full hover:bg-gray-800 transition duration-200" title="Cerrar sesión">
+                    <i data-lucide="log-out" class="w-6 h-6" style="color: var(--color-rojo-principal);"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- KPIS -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="tarjeta-kpi p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-sm font-medium uppercase" style="color: var(--color-azul-acento);">Ingresos Diarios</span>
+                    <i data-lucide="wallet" class="w-6 h-6 icon-alerta-azul"></i>
+                </div>
+                <p class="text-3xl font-bold mb-1">$1,540.00</p>
+                <span class="text-xs text-green-400 flex items-center"><i data-lucide="trending-up" class="w-3 h-3 mr-1"></i> +8.5% Hoy</span>
+            </div>
+
+            <div class="tarjeta-kpi p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-sm font-medium uppercase" style="color: var(--color-rojo-principal);">Socios Activos</span>
+                    <i data-lucide="users" class="w-6 h-6 icon-alerta-rojo"></i>
+                </div>
+                <p class="text-3xl font-bold mb-1">345</p>
+                <span class="text-xs text-yellow-400">Ocupación: 69%</span>
+            </div>
+
+            <div class="tarjeta-kpi p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-sm font-medium uppercase" style="color: var(--color-azul-acento);">Nuevos Socios (Mes)</span>
+                    <i data-lucide="user-plus" class="w-6 h-6 icon-alerta-azul"></i>
+                </div>
+                <p class="text-3xl font-bold mb-1">28</p>
+                <span class="text-xs text-green-400 flex items-center"><i data-lucide="trending-up" class="w-3 h-3 mr-1"></i> +12% vs Mes Anterior</span>
+            </div>
+
+            <div class="tarjeta-kpi p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-sm font-medium uppercase" style="color: var(--color-rojo-principal);">Stock Crítico</span>
+                    <i data-lucide="package-minus" class="w-6 h-6 icon-alerta-rojo"></i>
+                </div>
+                <p class="text-3xl font-bold mb-1">5</p>
+                <span class="text-xs text-gray-400">Productos requieren reabastecimiento</span>
+            </div>
+        </section>
+
+        <!-- GRÁFICOS -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-6">
+                <div class="tarjeta-grafico p-6 h-96">
+                    <h3 class="text-lg font-semibold mb-4" style="color: var(--color-texto-claro);">Ventas vs. Mes Anterior</h3>
+                    <canvas id="graficoVentas"></canvas>
+                </div>
+
+                <div class="tarjeta-grafico p-6 h-72">
+                    <h3 class="text-lg font-semibold mb-4" style="color: var(--color-texto-claro);">Concurrencia por Horario (Horas Pico)</h3>
+                    <canvas id="graficoConcurrencia"></canvas>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 space-y-6">
+                <div class="tarjeta-alerta p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center" style="color: var(--color-rojo-principal);">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 mr-2 icon-alerta-rojo"></i>
+                        Alertas Críticas
+                    </h3>
+                    
+                    <div class="border-b border-gray-700 pb-3 mb-3">
+                        <p class="font-medium">12 Membresías vencen esta semana.</p>
+                        <span class="text-xs text-gray-400">Notificación automática enviada.</span>
+                    </div>
+
+                    <div class="pb-3 mb-3">
+                        <p class="font-medium flex items-center">
+                            Stock Bajo: 
+                            <span class="ml-1 px-2 py-0.5 rounded-full text-xs font-semibold" style="background-color: var(--color-rojo-principal); color: var(--color-tarjeta-fondo);">5 Items</span>
+                        </p>
+                        <span class="text-xs text-gray-400">Revisar Whey Protein y Botellas de Agua.</span>
+                    </div>
+                </div>
+
+                <div class="tarjeta-grafico p-6 h-96">
+                    <h3 class="text-lg font-semibold mb-4" style="color: var(--color-texto-claro);">Distribución de Membresías</h3>
+                    <canvas id="graficoMembresias"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Importar módulos -->
+    <script type="module">
+        import { AuthStorage } from '/assets/js/config.js';
+        
+        // Verificar autenticación
+        if (!AuthStorage.isAuthenticated()) {
+            window.location.href = '/login';
+        }
+    </script>
+    
+    <!-- Scripts principales -->
+    <script type="module" src="/assets/js/dashboard.js"></script>
+</body>
+</html>
