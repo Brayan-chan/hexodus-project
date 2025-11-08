@@ -26,4 +26,41 @@ const AuthStorage = {
   isAuthenticated: () => !!AuthStorage.getToken(),
 }
 
-export { API_BASE_URL, API_ENDPOINTS, AuthStorage }
+// Configuración de alertas personalizadas
+const AlertConfig = {
+  showSuccess: (title, message) => {
+    return Swal.fire({
+      title: title,
+      text: message,
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1000,
+      allowOutsideClick: false,
+      customClass: {
+        popup: 'swal2-popup',
+        title: 'swal2-title',
+        htmlContainer: 'swal2-html-container',
+        icon: 'swal2-icon'
+      }
+    })
+  },
+  
+  showError: (title, message) => {
+    return Swal.fire({
+      title: title,
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'ENTENDIDO',
+      allowOutsideClick: false,
+      customClass: {
+        popup: 'swal2-popup',
+        title: 'swal2-title',
+        htmlContainer: 'swal2-html-container',
+        confirmButton: 'swal2-confirm',
+        icon: 'swal2-icon'
+      }
+    })
+  }
+}
+
+export { API_BASE_URL, API_ENDPOINTS, AuthStorage, AlertConfig }

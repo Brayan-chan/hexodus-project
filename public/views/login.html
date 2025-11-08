@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icon.png" />
     <!-- Carga de CSS para el login -->
     <link rel="stylesheet" href="/assets/css/login.css">
+    <link rel="stylesheet" href="/assets/css/sweetalert-custom.css">
     <!-- Carga de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -88,7 +89,7 @@
     <!-- Importar módulos de autenticación y conectar formulario con API -->
     <script type="module">
         import { login } from '/assets/js/auth.js';
-        import { AuthStorage } from '/assets/js/config.js';
+        import { AuthStorage, AlertConfig } from '/assets/js/config.js';
 
         // Si ya está autenticado, redirigir al dashboard
         if (AuthStorage.isAuthenticated()) {
@@ -106,12 +107,7 @@
             const captcha = document.getElementById('captcha').checked;
 
             if (!captcha) {
-                await Swal.fire({
-                    title: 'Error',
-                    text: 'Por favor verifica que no eres un robot',
-                    icon: 'error',
-                    confirmButtonColor: '#FF3B3B'
-                });
+                await AlertConfig.showError('Error', 'Por favor verifica que no eres un robot');
                 return;
             }
 
@@ -124,23 +120,15 @@
 
                 const response = await login(email, password);
                 
-                await Swal.fire({
-                    title: '¡Bienvenido!',
-                    text: 'Inicio de sesión exitoso',
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-
-                window.location.href = '/dashboard';
+                await AlertConfig.showSuccess('¡BIENVENIDO!', 'Inicio de sesión exitoso');
+                
+                // Esperar a que la alerta se cierre y luego redirigir
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 900);
             } catch (error) {
                 console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error',
-                    text: error.message || 'Error al iniciar sesión',
-                    icon: 'error',
-                    confirmButtonColor: '#FF3B3B'
-                });
+                await AlertConfig.showError('ERROR', error.message || 'Error al iniciar sesión');
             } finally {
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalText;
