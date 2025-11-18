@@ -26,16 +26,30 @@ app.get(["/", "/login"], (req, res) => {
 })
 
 app.get("/dashboard", (req, res) => {
-  const dashboardPath = path.join(__dirname, "..", "public", "views", "dashboard.html")
-  res.sendFile(dashboardPath)
+  res.sendFile(path.join(__dirname, "..", "public", "views", "dashboard.html"))
 })
 
 app.get("/socios", (req, res) => {
-  const sociosPath = path.join(__dirname, "..", "public", "views", "socios.html")
-  res.sendFile(sociosPath)
+  res.sendFile(path.join(__dirname, "..", "public", "views", "socios.html"))
 })
 
-const PORT = process.env.PORT || 3000
+app.get("/ventas", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "views", "ventas.html"))
+})
+
+app.get("/inventario", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "views", "inventario.html"))
+})
+
+app.get("/usuarios", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "views", "usuarios.html"))
+})
+
+app.get("/reportes", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "views", "reportes.html"))
+})
+
+const PORT = process.env.PORT || 5500
 app.listen(PORT, () => {
   console.log(`Server corriendo en http://localhost:${PORT}`)
 })

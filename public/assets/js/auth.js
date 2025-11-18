@@ -1,14 +1,12 @@
-import { API_ENDPOINTS, AuthStorage } from './config.js';
+import { API_ENDPOINTS, AuthStorage, AlertConfig } from './config.js';
 
 /**
  * Realiza login con email y contraseña
- * @param {string} email - Email del usuario
- * @param {string} password - Contraseña del usuario
- * @returns {Promise<Object>} Datos del usuario y sesión
  */
 async function login(email, password) {
   try {
-    const response = await fetch(API_ENDPOINTS.signin, {
+    console.log("[v0] Intentando login en:", API_ENDPOINTS.login)
+    const response = await fetch(API_ENDPOINTS.login, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -19,18 +17,18 @@ async function login(email, password) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw new Error(data.message || "Error al iniciar sesión")
+      throw new Error(data.error || "Error al iniciar sesión")
     }
 
     if (data.success && data.data) {
       const { user, session } = data.data
-
-      // Guardar token y usuario en localStorage
-      AuthStorage.saveToken(session.access_token)
+      
+      // Guardar token de la sesión
+      AuthStorage.saveToken(session.accessToken)
       AuthStorage.saveUser(user)
 
       console.log("[v0] Login exitoso para usuario:", user.email)
-      return { success: true, user }
+      return { success: true, usuario: user }
     }
 
     throw new Error("Respuesta inválida del servidor")
@@ -42,14 +40,12 @@ async function login(email, password) {
 
 /**
  * Realiza registro de nuevo usuario
- * @param {Object} userData - { email, password, first_name, last_name }
- * @returns {Promise<Object>} Datos del usuario creado
  */
 async function register(userData) {
   try {
-    console.log("[v0] Iniciando registro con email:", userData.email)
+    console.log("[v0] Iniciando registro en:", API_ENDPOINTS.register)
 
-    const response = await fetch(API_ENDPOINTS.signup, {
+    const response = await fetch(API_ENDPOINTS.register, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -60,11 +56,11 @@ async function register(userData) {
     const data = await response.json()
 
     if (!response.ok) {
-      throw new Error(data.message || "Error al crear cuenta")
+      throw new Error(data.error || "Error al crear cuenta")
     }
 
     console.log("[v0] Registro exitoso")
-    return { success: true, user: data.data.user }
+    return { success: true, usuario: data.data.user }
   } catch (error) {
     console.error("[v0] Error en registro:", error.message)
     throw error
@@ -72,15 +68,14 @@ async function register(userData) {
 }
 
 /**
- * Cierra sesión del usuario actual
- * @returns {Promise<boolean>}
+ * Cierra sesión
  */
 async function logout() {
   try {
     const token = AuthStorage.getToken()
 
     if (token) {
-      await fetch(API_ENDPOINTS.signout, {
+      await fetch(API_ENDPOINTS.logout, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -95,7 +90,6 @@ async function logout() {
     return true
   } catch (error) {
     console.error("[v0] Error en logout:", error.message)
-    // Limpiar localStorage incluso si hay error en la petición
     AuthStorage.removeToken()
     AuthStorage.removeUser()
     return false
@@ -104,9 +98,6 @@ async function logout() {
 
 /**
  * Realiza una petición HTTP autenticada
- * @param {string} url - URL del endpoint
- * @param {Object} options - Opciones de fetch
- * @returns {Promise<Object>} Respuesta JSON
  */
 async function fetchWithAuth(url, options = {}) {
   const token = AuthStorage.getToken()
@@ -127,10 +118,10 @@ async function fetchWithAuth(url, options = {}) {
   })
 
   if (response.status === 401) {
-    // Token expirado o inválido
     AuthStorage.removeToken()
     AuthStorage.removeUser()
-    window.location.href = "/"
+    window.location.href = "/login"
+    throw new Error("Sesión expirada")
   }
 
   return response.json()

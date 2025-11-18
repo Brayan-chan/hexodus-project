@@ -5,6 +5,16 @@ import { logout } from './auth.js';
 // Inicializa los íconos de Lucide
 lucide.createIcons();
 
+// Verificar y limpiar localStorage corrupto
+try {
+  const testUser = AuthStorage.getUser()
+  const testToken = AuthStorage.getToken()
+} catch (error) {
+  console.error("[v0] Error en localStorage, limpiando:", error)
+  AuthStorage.clearAll()
+  window.location.href = "/login"
+}
+
 // Verificar autenticación
 if (!AuthStorage.isAuthenticated()) {
   console.log("[v0] Usuario no autenticado, redirigiendo a login")
@@ -13,39 +23,56 @@ if (!AuthStorage.isAuthenticated()) {
 
 // Mostrar nombre de usuario
 const user = AuthStorage.getUser()
-if (user) {
-  document.getElementById("userNameDisplay").textContent = user.email.split("@")[0]
+if (user && user.email) {
+  const userNameDisplay = document.getElementById("userNameDisplay")
+  if (userNameDisplay) {
+    userNameDisplay.textContent = user.email.split("@")[0]
+  }
   console.log("[v0] Usuario autenticado:", user.email)
+} else {
+  console.log("[v0] No se pudo obtener información del usuario")
 }
 
 // Lógica de logout
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-  console.log("[v0] Iniciando logout")
-  await logout()
-  window.location.href = "/login"
-})
+const logoutBtn = document.getElementById("logoutBtn")
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    console.log("[v0] Iniciando logout")
+    await logout()
+    window.location.href = "/login"
+  })
+}
 
 // Navegación móvil - Toggle sidebar
-document.getElementById("menu-toggle").addEventListener("click", () => {
-  const sidebar = document.querySelector(".sidebar")
-  const backdrop = document.getElementById("backdrop")
-  sidebar.classList.toggle("-translate-x-full")
-  backdrop.classList.toggle("hidden")
-})
+const menuToggle = document.getElementById("menu-toggle")
+if (menuToggle) {
+  menuToggle.addEventListener("click", () => {
+    const sidebar = document.querySelector(".sidebar")
+    const backdrop = document.getElementById("backdrop")
+    if (sidebar) sidebar.classList.toggle("-translate-x-full")
+    if (backdrop) backdrop.classList.toggle("hidden")
+  })
+}
 
-document.getElementById("backdrop").addEventListener("click", () => {
-  const sidebar = document.querySelector(".sidebar")
-  const backdrop = document.getElementById("backdrop")
-  sidebar.classList.add("-translate-x-full")
-  backdrop.classList.add("hidden")
-})
+const backdrop = document.getElementById("backdrop")
+if (backdrop) {
+  backdrop.addEventListener("click", () => {
+    const sidebar = document.querySelector(".sidebar")
+    const backdrop = document.getElementById("backdrop")
+    if (sidebar) sidebar.classList.add("-translate-x-full")
+    if (backdrop) backdrop.classList.add("hidden")
+  })
+}
 
 // Actualizar fecha y hora
 const actualizarFechaHora = () => {
   const now = new Date()
   const fecha = now.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" })
   const hora = now.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", hour12: true })
-  document.getElementById("fecha-hora").textContent = `${fecha} | ${hora}`
+  const fechaHoraElement = document.getElementById("fecha-hora")
+  if (fechaHoraElement) {
+    fechaHoraElement.textContent = `${fecha} | ${hora}`
+  }
 }
 setInterval(actualizarFechaHora, 60000)
 actualizarFechaHora()
