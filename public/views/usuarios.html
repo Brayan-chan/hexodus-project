@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexodus | Gestión de Usuarios</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/icon.ico" />
+    <link rel="stylesheet" href="/assets/css/socios.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body onload="lucide.createIcons()">
+    <div class="flex h-screen overflow-hidden">
+        <aside
+            class="sidebar fixed z-30 inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out p-4 flex flex-col justify-between">
+            <div class="space-y-6">
+                <div class="flex items-center space-x-3 mb-8">
+                    <img src="../assets/images/icon.png" alt="Logo" class="h-10 w-10"
+                        style="filter: drop-shadow(0 0 4px rgba(255, 59, 59, 0.5));">
+                    <span class="text-xl font-bold tracking-widest uppercase"
+                        style="color: var(--color-rojo-principal);">HEXODUS</span>
+                </div>
+                <nav class="space-y-2">
+                    <a href="/dashboard"
+                        class="nav-link nav-activo flex items-center p-3 rounded-lg text-sm font-medium">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                        Dashboard
+                    </a>
+                    <a href="/socios"
+                        class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="users" class="w-5 h-5 mr-3"></i>
+                        Gestión de Socios
+                    </a>
+                    <a href="/ventas"
+                        class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="shopping-cart" class="w-5 h-5 mr-3"></i>
+                        Gestión de Ventas
+                    </a>
+                    <a href="/inventario"
+                        class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="package" class="w-5 h-5 mr-3"></i>
+                        Inventario y Productos
+                    </a>
+                    <a href="/reportes"
+                        class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="file-text" class="w-5 h-5 mr-3"></i>
+                        Reportes
+                    </a>
+                    <a href="/usuarios"
+                        class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="lock" class="w-5 h-5 mr-3"></i>
+                        Gestión de Usuarios
+                    </a>
+                </nav>
+            </div>
+            <div class="pb-4 border-t border-gray-800 pt-4">
+                <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="settings" class="w-5 h-5 mr-3"></i> Configuración
+                </a>
+            </div>
+        </aside>
+        <div id="backdrop" class="fixed inset-0 bg-black opacity-50 z-20 hidden md:hidden"></div>
+        <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2 rounded-lg"
+            style="background-color: var(--color-tarjeta-fondo);">
+            <i data-lucide="menu" class="w-6 h-6" style="color: var(--color-azul-acento);"></i>
+        </button>
+        <main class="flex-1 md:ml-64 p-4 md:p-8 space-y-8">
+            <header class="encabezado-dashboard flex items-center justify-between p-4 rounded-xl sticky top-0 z-10">
+                <h1 class="text-2xl font-bold" style="color: var(--color-azul-acento);">Gestión de Usuarios</h1>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm hidden sm:block" id="fecha-hora-header">--/--/---- | --:-- --</span>
+                    <i data-lucide="bell" class="w-6 h-6 text-gray-400 hover:text-white cursor-pointer"></i>
+                    <i id="logoutBtn" data-lucide="log-out"
+                        class="w-6 h-6 text-gray-400 hover:text-white cursor-pointer"></i>
+                </div>
+            </header>
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="tarjeta p-6 flex flex-col items-center">
+                        <i data-lucide="user-plus" class="w-12 h-12 mb-4"
+                            style="color: var(--color-rojo-principal);"></i>
+                        <h2 class="text-xl font-semibold mb-4">Nuevo Usuario</h2>
+                        <p class="text-sm text-center mb-4 text-gray-400">Registra un nuevo usuario</p>
+                        <button class="btn-principal w-full py-3 font-bold rounded-lg uppercase">Agregar
+                            Usuario</button>
+                    </div>
+                    <div class="tarjeta p-6">
+                        <h2 class="text-xl font-semibold mb-4" style="color: var(--color-azul-acento);">Filtros</h2>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2 text-gray-400">Buscar usuario</label>
+                            <input type="text" placeholder="Nombre o email"
+                                class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2 text-gray-400">Filtrar por estado</label>
+                            <select
+                                class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white">
+                                <option>Todos</option>
+                                <option>Activo</option>
+                                <option>Inactivo</option>
+                            </select>
+                        </div>
+                        <button class="btn-secundario w-full py-2 font-medium rounded-lg uppercase">Aplicar
+                            Filtros</button>
+                    </div>
+                </div>
+                <div class="lg:col-span-3">
+                    <div class="tarjeta p-6">
+                        <h2 class="text-xl font-semibold mb-4 flex items-center">
+                            <i data-lucide="users" class="w-6 h-6 mr-2" style="color: var(--color-azul-acento);"></i>
+                            Lista de Usuarios Activos
+                        </h2>
+                        <div class="overflow-x-auto tabla-scroll">
+                            <table class="min-w-full divide-y divide-gray-700">
+                                <thead class="bg-gray-700">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
+                                            Clave</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
+                                            Nombre</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
+                                            Teléfono</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
+                                            Estatus</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
+                                            Rol</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
+                                            Fecha Creación</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
+                                            Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script type="module" src="/assets/js/usuarios.js"></script>
+</body>
+
+</html>
