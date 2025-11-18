@@ -8,6 +8,7 @@ async function login(email, password) {
     console.log("[v0] Intentando login en:", API_ENDPOINTS.login)
     const response = await fetch(API_ENDPOINTS.login, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -47,6 +48,7 @@ async function register(userData) {
 
     const response = await fetch(API_ENDPOINTS.register, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -77,6 +79,7 @@ async function logout() {
     if (token) {
       await fetch(API_ENDPOINTS.logout, {
         method: "POST",
+        credentials: "include",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -114,6 +117,7 @@ async function fetchWithAuth(url, options = {}) {
 
   const response = await fetch(url, {
     ...options,
+    credentials: "include",
     headers,
   })
 
