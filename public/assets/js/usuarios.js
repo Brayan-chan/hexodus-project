@@ -169,6 +169,7 @@ async function crearUsuario() {
       // Usar el endpoint de registro para crear usuario
       const data = await fetch(API_ENDPOINTS.register, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(nuevoUsuario)
       })
