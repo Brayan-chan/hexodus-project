@@ -1,16 +1,26 @@
-// Configuración central de la aplicación
+// Configuración central de la aplicación - API en producción
 const API_BASE_URL = "https://hexodus-backend.vercel.app"
 
-const API_ENDPOINTS = {
-  signin: `${API_BASE_URL}/api/auth/signin`,
-  signup: `${API_BASE_URL}/api/auth/signup`,
-  signout: `${API_BASE_URL}/api/auth/signout`,
+export const API_ENDPOINTS = {
+  // Autenticación
+  login: `${API_BASE_URL}/api/auth/signin`,
+  register: `${API_BASE_URL}/api/auth/signup`,
+  refresh: `${API_BASE_URL}/api/auth/refresh`,
+  me: `${API_BASE_URL}/api/auth/me`,
+  logout: `${API_BASE_URL}/api/auth/logout`,
+  
+  // Gestión de entidades
+  usuarios: `${API_BASE_URL}/api/auth/users`,  // Ahora apunta al endpoint correcto
   socios: `${API_BASE_URL}/api/socios`,
-  ventas: `${API_BASE_URL}/api/ventas`,
-  inventario: `${API_BASE_URL}/api/inventario`,
+  products: `${API_BASE_URL}/api/products`,
+  sales: `${API_BASE_URL}/api/sales`,
+  inventory: `${API_BASE_URL}/api/inventory`,
+  roles: `${API_BASE_URL}/api/roles`,
+  memberships: `${API_BASE_URL}/api/memberships`,
+  movements: `${API_BASE_URL}/api/movements`,
+  reports: `${API_BASE_URL}/api/reports`
 }
 
-// Funciones de utilidad para localStorage
 const AuthStorage = {
   saveToken: (token) => localStorage.setItem("auth_token", token),
   getToken: () => localStorage.getItem("auth_token"),
@@ -19,48 +29,91 @@ const AuthStorage = {
   saveUser: (user) => localStorage.setItem("current_user", JSON.stringify(user)),
   getUser: () => {
     const user = localStorage.getItem("current_user")
-    return user ? JSON.parse(user) : null
+    if (!user || user === "undefined" || user === "null") {
+      return null
+    }
+    try {
+      return JSON.parse(user)
+    } catch (error) {
+      console.error("Error parsing user:", error)
+      return null
+    }
   },
   removeUser: () => localStorage.removeItem("current_user"),
 
-  isAuthenticated: () => !!AuthStorage.getToken(),
+  isAuthenticated: () => {
+    const token = AuthStorage.getToken()
+    const user = AuthStorage.getUser()
+    return !!(token && user)
+  },
+
+  clearAll: () => {
+    localStorage.removeItem("auth_token")
+    localStorage.removeItem("current_user")
+  }
 }
 
-// Configuración de alertas personalizadas
 const AlertConfig = {
-  showSuccess: (title, message) => {
+  showSuccess: async (title, message) => {
+    if (typeof Swal === 'undefined') {
+      console.error("[v0] SweetAlert2 no está cargado")
+      alert(title + ": " + message)
+      return
+    }
     return Swal.fire({
       title: title,
       text: message,
       icon: 'success',
-      showConfirmButton: false,
-      timer: 1000,
+      showConfirmButton: true,
+      confirmButtonText: 'CONTINUAR',
       allowOutsideClick: false,
+      confirmButtonColor: '#00DA68',
       customClass: {
         popup: 'swal2-popup',
         title: 'swal2-title',
-        htmlContainer: 'swal2-html-container',
-        icon: 'swal2-icon'
+        confirmButton: 'swal2-confirm'
       }
     })
   },
   
-  showError: (title, message) => {
+  showError: async (title, message) => {
+    if (typeof Swal === 'undefined') {
+      console.error("[v0] SweetAlert2 no está cargado")
+      alert(title + ": " + message)
+      return
+    }
     return Swal.fire({
       title: title,
       text: message,
       icon: 'error',
       confirmButtonText: 'ENTENDIDO',
       allowOutsideClick: false,
+      confirmButtonColor: '#FF3D3D',
       customClass: {
         popup: 'swal2-popup',
         title: 'swal2-title',
-        htmlContainer: 'swal2-html-container',
-        confirmButton: 'swal2-confirm',
-        icon: 'swal2-icon'
+        confirmButton: 'swal2-confirm'
       }
+    })
+  },
+
+  showConfirm: async (title, message) => {
+    if (typeof Swal === 'undefined') {
+      console.error("[v0] SweetAlert2 no está cargado")
+      return { isConfirmed: confirm(title + "\n" + message) }
+    }
+    return Swal.fire({
+      title: title,
+      text: message,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#FF3D3D',
+      cancelButtonColor: '#6B7280',
+      allowOutsideClick: false
     })
   }
 }
 
-export { API_BASE_URL, API_ENDPOINTS, AuthStorage, AlertConfig }
+export { API_BASE_URL, AuthStorage, AlertConfig }
