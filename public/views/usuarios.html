@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hexodus | Gestión de Usuarios</title>
+    <title>Hexodus | Gestion de usuarios</title>
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/icon.ico" />
     <link rel="stylesheet" href="/assets/css/socios.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -95,19 +95,28 @@
                         <h2 class="text-xl font-semibold mb-4" style="color: var(--color-azul-acento);">Filtros</h2>
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-2 text-gray-400">Buscar usuario</label>
-                            <input type="text" placeholder="Nombre o email"
+                            <input type="text" placeholder="Nombre o email" id="buscar-usuarios"
                                 class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white">
                         </div>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium mb-2 text-gray-400">Filtrar por estado</label>
-                            <select
+                            <label class="block text-sm font-medium mb-2 text-gray-400">Filtrar por rol</label>
+                            <select id="filtro-rol"
                                 class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white">
-                                <option>Todos</option>
-                                <option>Activo</option>
-                                <option>Inactivo</option>
+                                <option value="">Todos los roles</option>
+                                <option value="admin">Administrador</option>
+                                <option value="vendedor">Vendedor</option>
                             </select>
                         </div>
-                        <button class="btn-secundario w-full py-2 font-medium rounded-lg uppercase">Aplicar
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2 text-gray-400">Filtrar por estado</label>
+                            <select id="filtro-status"
+                                class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white">
+                                <option value="">Todos los estados</option>
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                        <button class="btn-secundario w-full py-2 font-medium rounded-lg uppercase">Limpiar
                             Filtros</button>
                     </div>
                 </div>
@@ -115,20 +124,20 @@
                     <div class="tarjeta p-6">
                         <h2 class="text-xl font-semibold mb-4 flex items-center">
                             <i data-lucide="users" class="w-6 h-6 mr-2" style="color: var(--color-azul-acento);"></i>
-                            Lista de Usuarios Activos
+                            Lista de Usuarios
                         </h2>
                         <div class="overflow-x-auto tabla-scroll">
                             <table class="min-w-full divide-y divide-gray-700">
                                 <thead class="bg-gray-700">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
-                                            Clave</th>
+                                            ID</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
-                                            Nombre</th>
+                                            Usuario</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
                                             Teléfono</th>
                                         <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
-                                            Estatus</th>
+                                            Estado</th>
                                         <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
                                             Rol</th>
                                         <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">

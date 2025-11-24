@@ -3,14 +3,14 @@ const API_BASE_URL = "https://hexodus-backend.vercel.app"
 
 export const API_ENDPOINTS = {
   // Autenticación
-  login: `${API_BASE_URL}/api/auth/signin`,
-  register: `${API_BASE_URL}/api/auth/signup`,
-  refresh: `${API_BASE_URL}/api/auth/refresh`,
-  me: `${API_BASE_URL}/api/auth/me`,
-  logout: `${API_BASE_URL}/api/auth/logout`,
+  login: `${API_BASE_URL}/auth/login`,
+  register: `${API_BASE_URL}/auth/register`,
+  refresh: `${API_BASE_URL}/auth/refresh`,
+  me: `${API_BASE_URL}/auth/me`,
+  logout: `${API_BASE_URL}/auth/logout`,
   
-  // Gestión de entidades
-  usuarios: `${API_BASE_URL}/api/auth/users`,  // Ahora apunta al endpoint correcto
+  // Gestión de usuarios (endpoints correctos que ya probamos)
+  usuarios: `${API_BASE_URL}/auth/users`,
   socios: `${API_BASE_URL}/api/socios`,
   products: `${API_BASE_URL}/api/products`,
   sales: `${API_BASE_URL}/api/sales`,
