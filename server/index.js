@@ -53,6 +53,10 @@ app.get("/perfil", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "views", "perfil.html"))
 })
 
+app.get("/settings", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "views", "settings.html"))
+})
+
 const PORT = process.env.PORT || 5500
 app.listen(PORT, () => {
   console.log(`Server corriendo en http://localhost:${PORT}`)
