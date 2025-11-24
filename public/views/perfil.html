@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexodus | Gestión de perfil</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/icon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/icon.png" />
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar fixed z-30 inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out p-4 flex flex-col justify-between">
+        <div class="space-y-6">
+            <div class="flex items-center space-x-3 mb-8">
+                <img src="/assets/images/icon.png" alt="Logo Hexodus" class="h-10 w-10 icon-alerta-rojo" />
+                <span class="text-xl font-bold tracking-widest uppercase" style="color: var(--color-rojo-principal);">Hexodus</span>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="/dashboard" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                    Dashboard
+                </a>
+                <a href="/socios" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="users" class="w-5 h-5 mr-3"></i>
+                    Gestión de Socios 
+                </a>
+                <a href="/ventas" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="shopping-cart" class="w-5 h-5 mr-3"></i>
+                    Gestión de Ventas
+                </a>
+                <a href="/inventario" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="package" class="w-5 h-5 mr-3"></i>
+                    Inventario y Productos
+                </a>
+                <a href="/reportes" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="file-text" class="w-5 h-5 mr-3"></i>
+                    Reportes
+                </a>
+                <a href="/usuarios" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <i data-lucide="lock" class="w-5 h-5 mr-3"></i>
+                    Gestión de Usuarios
+                </a>
+                <a href="/perfil" class="nav-link nav-activo flex items-center p-3 rounded-lg text-sm font-medium">
+                    <i data-lucide="user" class="w-5 h-5 mr-3"></i>
+                    Gestión de Perfil
+                </a>
+            </nav>
+        </div>
+
+        <div class="pb-4 border-t border-gray-800 pt-4">
+            <a href="#" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                Configuración 
+            </a>
+        </div>
+    </aside>
+
+    <div id="backdrop" class="fixed inset-0 bg-black opacity-50 z-20 hidden md:hidden"></div>
+    
+    <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2 rounded-lg" style="background-color: var(--color-tarjeta-fondo);">
+        <i data-lucide="menu" class="w-6 h-6" style="color: var(--color-azul-acento);"></i>
+    </button>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 md:ml-64 p-4 md:p-8 space-y-8">
+        
+        <!-- ENCABEZADO -->
+        <header class="encabezado-dashboard flex items-center justify-between p-4 rounded-xl sticky top-0 z-10">
+            <div>
+                <h2 class="text-2xl font-semibold" style="color: var(--color-azul-acento);">Gestión de perfil</h2>
+                <p id="fecha-hora" class="text-sm" style="color: var(--color-texto-gris);">--/--/---- | --:-- --</p>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <button class="p-2 rounded-full hover:bg-gray-800 transition duration-200 relative">
+                    <i data-lucide="bell" class="w-6 h-6" style="color: var(--color-azul-acento);"></i>
+                    <span class="absolute top-0 right-0 h-2 w-2 rounded-full" style="background-color: var(--color-rojo-principal);"></span>
+                </button>
+                <button id="logoutBtn" class="p-2 rounded-full hover:bg-gray-800 transition duration-200" title="Cerrar sesión">
+                    <i data-lucide="log-out" class="w-6 h-6" style="color: var(--color-rojo-principal);"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTENIDO DE PERFIL -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- SECCIÓN IZQUIERDA - INFORMACIÓN DEL PERFIL -->
+            <div class="tarjeta-dashboard p-8 rounded-xl">
+                <div class="flex flex-col items-center space-y-6">
+                    <!-- Foto de perfil -->
+                    <div class="relative">
+                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center border-4 border-blue-400">
+                            <i data-lucide="user" class="w-16 h-16 text-white"></i>
+                        </div>
+                    </div>
+
+                    <!-- Formulario de información personal -->
+                    <div class="w-full space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Nombre completo</label>
+                            <input 
+                                type="text" 
+                                id="nombreCompleto"
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                                placeholder="Nombre completo"
+                            >
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Correo</label>
+                            <input 
+                                type="email" 
+                                id="correoUsuario"
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                                placeholder="correo@ejemplo.com"
+                                readonly
+                            >
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Número telefónico</label>
+                            <input 
+                                type="tel" 
+                                id="telefonoUsuario"
+                                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                                placeholder="Número telefónico"
+                            >
+                        </div>
+
+                        <button 
+                            id="editarPerfilBtn"
+                            class="w-full py-3 px-6 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200"
+                        >
+                            Editar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN DERECHA - PREFERENCIAS DEL SISTEMA -->
+            <div class="tarjeta-dashboard p-8 rounded-xl">
+                <h3 class="text-xl font-semibold text-blue-400 mb-6">Preferencias del sistema</h3>
+                
+                <div class="space-y-6">
+                    <!-- Idioma -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-medium text-gray-300">Idioma</label>
+                        <select 
+                            id="idiomaSelect"
+                            class="px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white"
+                        >
+                            <option value="">Selecciona una ...</option>
+                            <option value="es">Español</option>
+                            <option value="en">English</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+
+                    <!-- Modo claro/oscuro -->
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-medium text-gray-300">Modo claro</label>
+                        <div class="relative">
+                            <input 
+                                type="checkbox" 
+                                id="modoClaro"
+                                class="sr-only"
+                            >
+                            <div class="toggle-switch w-12 h-6 bg-gray-600 rounded-full cursor-pointer transition duration-200" onclick="toggleSwitch('modoClaro')">
+                                <div class="toggle-circle w-5 h-5 bg-white rounded-full shadow-md transform transition duration-200 translate-x-0.5 translate-y-0.5"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notificaciones por correo -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-medium text-gray-300">Notificaciones por correo</label>
+                        <select 
+                            id="notificacionesCorreo"
+                            class="px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white"
+                        >
+                            <option value="">Selecciona una ...</option>
+                            <option value="todos">Todas las notificaciones</option>
+                            <option value="importantes">Solo importantes</option>
+                            <option value="ninguna">Ninguna</option>
+                        </select>
+                    </div>
+
+                    <!-- Recordatorios diarios -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-medium text-gray-300">Recordatorios diarios</label>
+                        <select 
+                            id="recordatoriosDiarios"
+                            class="px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white"
+                        >
+                            <option value="">Selecciona una ...</option>
+                            <option value="mañana">Por la mañana</option>
+                            <option value="tarde">Por la tarde</option>
+                            <option value="noche">Por la noche</option>
+                            <option value="desactivado">Desactivado</option>
+                        </select>
+                    </div>
+
+                    <!-- Guardar sesión automáticamente -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-sm font-medium text-gray-300">Guardar sesión automáticamente</label>
+                        <select 
+                            id="guardarSesion"
+                            class="px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white"
+                        >
+                            <option value="">Selecciona una ...</option>
+                            <option value="siempre">Siempre</option>
+                            <option value="nunca">Nunca</option>
+                            <option value="preguntar">Preguntar cada vez</option>
+                        </select>
+                    </div>
+
+                    <!-- Botón aplicar preferencias -->
+                    <button 
+                        id="aplicarPreferenciasBtn"
+                        class="w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200 mt-8"
+                    >
+                        Aplicar preferencias
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Estilos específicos para la página de perfil -->
+    <style>
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .toggle-switch.active {
+            background-color: #10b981;
+        }
+        
+        .toggle-switch.active .toggle-circle {
+            transform: translateX(1.5rem) translateY(0.125rem);
+        }
+        
+        .tarjeta-dashboard {
+            background-color: var(--color-tarjeta-fondo);
+            border: 1px solid var(--color-borde-tarjeta);
+        }
+        
+        /* Animaciones suaves */
+        .toggle-circle {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        /* Estilos para selects */
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+    </style>
+
+    <!-- Importar módulos -->
+    <script type="module">
+        import { AuthStorage } from '/assets/js/config.js';
+        
+        // Verificar autenticación
+        if (!AuthStorage.isAuthenticated()) {
+            window.location.href = '/login';
+        }
+    </script>
+    
+    <!-- Scripts principales -->
+    <script type="module" src="/assets/js/dashboard.js"></script>
+    <script type="module" src="/assets/js/perfil.js"></script>
+    
+    <script>
+        // Función para toggle del switch
+        function toggleSwitch(switchId) {
+            const switchElement = document.getElementById(switchId);
+            const toggleElement = switchElement.nextElementSibling;
+            
+            switchElement.checked = !switchElement.checked;
+            toggleElement.classList.toggle('active');
+        }
+        
+        // Hacer la función global
+        window.toggleSwitch = toggleSwitch;
+    </script>
+</body>
+</html>
