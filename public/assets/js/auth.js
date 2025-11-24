@@ -22,10 +22,10 @@ async function login(email, password) {
     }
 
     if (data.success && data.data) {
-      const { user, session } = data.data
+      const { user, token } = data.data
       
-      // Guardar token de la sesión
-      AuthStorage.saveToken(session.accessToken)
+      // Guardar token y usuario
+      AuthStorage.saveToken(token)
       AuthStorage.saveUser(user)
 
       console.log("[v0] Login exitoso para usuario:", user.email)
