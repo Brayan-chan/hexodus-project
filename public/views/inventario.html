@@ -94,21 +94,26 @@
                     <div class="tarjeta p-6">
                         <h2 class="text-xl font-semibold mb-4" style="color: var(--color-azul-acento);">Filtros</h2>
                         <div class="mb-4">
-                            <label class="block text-sm font-medium mb-2 text-gray-400">Buscar por tipo</label>
-                            <input type="text" placeholder="Ej. Proteína"
+                            <label class="block text-sm font-medium mb-2 text-gray-400">Buscar por nombre</label>
+                            <input id="campo-busqueda" type="text" placeholder="Ej. Proteína"
                                 class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white">
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-2 text-gray-400">Filtrar por estado</label>
-                            <select
+                            <select id="filtro-estado"
                                 class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white">
-                                <option>Todos</option>
-                                <option>En Stock</option>
-                                <option>Agotado</option>
+                                <option value="">Todos</option>
+                                <option value="en stock">En Stock</option>
+                                <option value="stock bajo">Stock Bajo</option>
+                                <option value="agotado">Agotado</option>
                             </select>
                         </div>
-                        <button class="btn-secundario w-full py-2 font-medium rounded-lg uppercase">Aplicar
-                            Filtros</button>
+                        <div class="space-y-3">
+                            <button id="btn-aplicar-filtros" class="btn-secundario w-full py-2 font-medium rounded-lg uppercase">Aplicar
+                                Filtros</button>
+                            <button id="btn-limpiar-filtros" class="w-full py-2 px-4 bg-gray-600 hover:bg-gray-500 text-white font-medium rounded-lg uppercase transition duration-200">Limpiar
+                                Filtros</button>
+                        </div>
                     </div>
                 </div>
                 <div class="lg:col-span-3">
@@ -131,6 +136,8 @@
                                             Costo</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
                                             Precio</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
+                                            Stock</th>
                                         <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
                                             Estado</th>
                                         <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
