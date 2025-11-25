@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,32 +12,43 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body class="bg-gray-900 text-white">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar fixed z-30 inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out p-4 flex flex-col justify-between">
+    <aside
+        class="sidebar fixed z-30 inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out p-4 flex flex-col justify-between">
         <div class="space-y-6">
             <div class="flex items-center space-x-3 mb-8">
                 <img src="/assets/images/icon.png" alt="Logo Hexodus" class="h-10 w-10 icon-alerta-rojo" />
-                <span class="text-xl font-bold tracking-widest uppercase" style="color: var(--color-rojo-principal);">Hexodus</span>
+                <span class="text-xl font-bold tracking-widest uppercase"
+                    style="color: var(--color-rojo-principal);">Hexodus</span>
             </div>
 
             <nav class="space-y-2">
-                <a href="/dashboard" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                <a href="/dashboard"
+                    class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
                     <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
                     Dashboard
                 </a>
                 <a href="/socios" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
                     <i data-lucide="users" class="w-5 h-5 mr-3"></i>
-                    Gestión de socios 
+                    Gestión de socios
                 </a>
                 <a href="/ventas" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
                     <i data-lucide="shopping-cart" class="w-5 h-5 mr-3"></i>
                     Gestión de ventas
                 </a>
-                <a href="/inventario" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                <a href="/inventario"
+                    class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
                     <i data-lucide="package" class="w-5 h-5 mr-3"></i>
                     Inventario y productos
+                </a>
+                <a href="/membresias">
+                    <div class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                        <i data-lucide="credit-card" class="w-5 h-5 mr-3"></i>
+                        Membresías
+                    </div>
                 </a>
                 <a href="/reportes" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
                     <i data-lucide="file-text" class="w-5 h-5 mr-3"></i>
@@ -56,20 +68,21 @@
         <div class="pb-4 border-t border-gray-800 pt-4">
             <a href="/settings" class="nav-link nav-activo flex items-center p-3 rounded-lg text-sm font-medium">
                 <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
-                Configuración 
+                Configuración
             </a>
         </div>
     </aside>
 
     <div id="backdrop" class="fixed inset-0 bg-black opacity-50 z-20 hidden md:hidden"></div>
-    
-    <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2 rounded-lg" style="background-color: var(--color-tarjeta-fondo);">
+
+    <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-40 p-2 rounded-lg"
+        style="background-color: var(--color-tarjeta-fondo);">
         <i data-lucide="menu" class="w-6 h-6" style="color: var(--color-azul-acento);"></i>
     </button>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="flex-1 md:ml-64 p-4 md:p-8 space-y-8">
-        
+
         <!-- ENCABEZADO -->
         <header class="encabezado-dashboard flex items-center justify-between p-4 rounded-xl sticky top-0 z-10">
             <div>
@@ -80,9 +93,11 @@
             <div class="flex items-center space-x-4">
                 <button class="p-2 rounded-full hover:bg-gray-800 transition duration-200 relative">
                     <i data-lucide="bell" class="w-6 h-6" style="color: var(--color-azul-acento);"></i>
-                    <span class="absolute top-0 right-0 h-2 w-2 rounded-full" style="background-color: var(--color-rojo-principal);"></span>
+                    <span class="absolute top-0 right-0 h-2 w-2 rounded-full"
+                        style="background-color: var(--color-rojo-principal);"></span>
                 </button>
-                <button id="logoutBtn" class="p-2 rounded-full hover:bg-gray-800 transition duration-200" title="Cerrar sesión">
+                <button id="logoutBtn" class="p-2 rounded-full hover:bg-gray-800 transition duration-200"
+                    title="Cerrar sesión">
                     <i data-lucide="log-out" class="w-6 h-6" style="color: var(--color-rojo-principal);"></i>
                 </button>
             </div>
@@ -91,7 +106,7 @@
         <!-- CONFIGURACIÓN DE RESPALDO -->
         <div class="tarjeta-dashboard p-8 rounded-xl">
             <h3 class="text-xl font-semibold text-blue-400 mb-6">Configuración de respaldo</h3>
-            
+
             <div class="space-y-6">
                 <!-- Elementos a respaldar -->
                 <div>
@@ -103,64 +118,72 @@
                                 <span class="text-sm text-gray-300">Base de datos</span>
                                 <div class="relative">
                                     <input type="checkbox" id="baseDatos" class="sr-only" checked>
-                                    <div class="toggle-switch w-12 h-6 bg-green-500 rounded-full cursor-pointer" onclick="toggleSwitch('baseDatos')">
-                                        <div class="toggle-circle w-5 h-5 bg-white rounded-full shadow-md transform transition duration-200 translate-x-6 translate-y-0.5"></div>
+                                    <div class="toggle-switch w-12 h-6 bg-green-500 rounded-full cursor-pointer"
+                                        onclick="toggleSwitch('baseDatos')">
+                                        <div
+                                            class="toggle-circle w-5 h-5 bg-white rounded-full shadow-md transform transition duration-200 translate-x-6 translate-y-0.5">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-gray-300">Archivos adjuntos</span>
                                 <div class="relative">
                                     <input type="checkbox" id="archivosAdjuntos" class="sr-only" checked>
-                                    <div class="toggle-switch w-12 h-6 bg-green-500 rounded-full cursor-pointer" onclick="toggleSwitch('archivosAdjuntos')">
-                                        <div class="toggle-circle w-5 h-5 bg-white rounded-full shadow-md transform transition duration-200 translate-x-6 translate-y-0.5"></div>
+                                    <div class="toggle-switch w-12 h-6 bg-green-500 rounded-full cursor-pointer"
+                                        onclick="toggleSwitch('archivosAdjuntos')">
+                                        <div
+                                            class="toggle-circle w-5 h-5 bg-white rounded-full shadow-md transform transition duration-200 translate-x-6 translate-y-0.5">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-gray-300">Usuarios y roles</span>
                                 <div class="relative">
                                     <input type="checkbox" id="usuariosRoles" class="sr-only" checked>
-                                    <div class="toggle-switch w-12 h-6 bg-green-500 rounded-full cursor-pointer" onclick="toggleSwitch('usuariosRoles')">
-                                        <div class="toggle-circle w-5 h-5 bg-white rounded-full shadow-md transform transition duration-200 translate-x-6 translate-y-0.5"></div>
+                                    <div class="toggle-switch w-12 h-6 bg-green-500 rounded-full cursor-pointer"
+                                        onclick="toggleSwitch('usuariosRoles')">
+                                        <div
+                                            class="toggle-circle w-5 h-5 bg-white rounded-full shadow-md transform transition duration-200 translate-x-6 translate-y-0.5">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Columna derecha -->
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-gray-300">Configuraciones del sistema</span>
                                 <div class="relative">
                                     <input type="checkbox" id="configuracionesSistema" class="sr-only" checked>
-                                    <div class="toggle-switch w-12 h-6 bg-green-500 rounded-full cursor-pointer" onclick="toggleSwitch('configuracionesSistema')">
-                                        <div class="toggle-circle w-5 h-5 bg-white rounded-full shadow-md transform transition duration-200 translate-x-6 translate-y-0.5"></div>
+                                    <div class="toggle-switch w-12 h-6 bg-green-500 rounded-full cursor-pointer"
+                                        onclick="toggleSwitch('configuracionesSistema')">
+                                        <div
+                                            class="toggle-circle w-5 h-5 bg-white rounded-full shadow-md transform transition duration-200 translate-x-6 translate-y-0.5">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="flex flex-col space-y-2">
                                 <span class="text-sm text-gray-300">Ubicación de almacenamiento</span>
-                                <select 
-                                    id="ubicacionAlmacenamiento"
-                                    class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white text-sm"
-                                >
+                                <select id="ubicacionAlmacenamiento"
+                                    class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white text-sm">
                                     <option value="">Selecciona una ...</option>
                                     <option value="local">Local</option>
                                     <option value="nube">Nube</option>
                                     <option value="servidor">Servidor remoto</option>
                                 </select>
                             </div>
-                            
+
                             <div class="flex flex-col space-y-2">
                                 <span class="text-sm text-gray-300">Ruta o carpeta destino</span>
-                                <select 
-                                    id="rutaDestino"
-                                    class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white text-sm"
-                                >
+                                <select id="rutaDestino"
+                                    class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white text-sm">
                                     <option value="">Selecciona una ...</option>
                                     <option value="/backups">Carpeta /backups</option>
                                     <option value="/documents/respaldos">Documentos/respaldos</option>
@@ -173,22 +196,16 @@
 
                 <!-- Botones de acción -->
                 <div class="flex space-x-4">
-                    <button 
-                        id="historialBtn"
-                        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200"
-                    >
+                    <button id="historialBtn"
+                        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200">
                         Historial
                     </button>
-                    <button 
-                        id="editarProgramacionBtn"
-                        class="px-6 py-3 bg-gray-700 border border-blue-500 hover:bg-gray-600 text-blue-400 font-semibold rounded-lg transition duration-200"
-                    >
+                    <button id="editarProgramacionBtn"
+                        class="px-6 py-3 bg-gray-700 border border-blue-500 hover:bg-gray-600 text-blue-400 font-semibold rounded-lg transition duration-200">
                         Editar programación
                     </button>
-                    <button 
-                        id="generarRespaldoBtn"
-                        class="px-6 py-3 bg-gray-700 border border-blue-500 hover:bg-gray-600 text-blue-400 font-semibold rounded-lg transition duration-200"
-                    >
+                    <button id="generarRespaldoBtn"
+                        class="px-6 py-3 bg-gray-700 border border-blue-500 hover:bg-gray-600 text-blue-400 font-semibold rounded-lg transition duration-200">
                         Generar respaldo ahora
                     </button>
                 </div>
@@ -198,15 +215,13 @@
         <!-- RESTAURAR INFORMACIÓN DESDE RESPALDO -->
         <div class="tarjeta-dashboard p-8 rounded-xl">
             <h3 class="text-xl font-semibold text-blue-400 mb-6">Restaurar información desde respaldo</h3>
-            
+
             <div class="space-y-6">
                 <!-- Seleccionar respaldos -->
                 <div class="flex flex-col space-y-2">
                     <label class="text-sm font-medium text-gray-300">Seleccionar respaldos</label>
-                    <select 
-                        id="seleccionarRespaldos"
-                        class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white text-sm max-w-xs"
-                    >
+                    <select id="seleccionarRespaldos"
+                        class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white text-sm max-w-xs">
                         <option value="">Selecciona una ...</option>
                         <option value="respaldo_20231120">Respaldo 20/11/2023 - 14:30</option>
                         <option value="respaldo_20231115">Respaldo 15/11/2023 - 09:15</option>
@@ -220,21 +235,25 @@
                     <div class="space-y-4">
                         <div class="flex items-center space-x-3">
                             <div class="relative">
-                                <input type="radio" id="restauracionCompleta" name="tipoRestauracion" class="sr-only" checked>
-                                <div class="radio-switch w-6 h-6 border-2 border-green-500 bg-green-500 rounded-full cursor-pointer flex items-center justify-center" onclick="selectRadio('restauracionCompleta')">
+                                <input type="radio" id="restauracionCompleta" name="tipoRestauracion" class="sr-only"
+                                    checked>
+                                <div class="radio-switch w-6 h-6 border-2 border-green-500 bg-green-500 rounded-full cursor-pointer flex items-center justify-center"
+                                    onclick="selectRadio('restauracionCompleta')">
                                     <div class="radio-dot w-3 h-3 bg-white rounded-full"></div>
                                 </div>
                             </div>
                             <div>
                                 <span class="text-sm font-medium text-gray-300">Completa</span>
-                                <span class="text-xs text-gray-500 ml-2">(base de datos + configuraciones + archivos)</span>
+                                <span class="text-xs text-gray-500 ml-2">(base de datos + configuraciones +
+                                    archivos)</span>
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start space-x-3">
                             <div class="relative mt-1">
                                 <input type="radio" id="restauracionParcial" name="tipoRestauracion" class="sr-only">
-                                <div class="radio-switch w-6 h-6 border-2 border-green-500 bg-green-500 rounded-full cursor-pointer flex items-center justify-center" onclick="selectRadio('restauracionParcial')">
+                                <div class="radio-switch w-6 h-6 border-2 border-green-500 bg-green-500 rounded-full cursor-pointer flex items-center justify-center"
+                                    onclick="selectRadio('restauracionParcial')">
                                     <div class="radio-dot w-3 h-3 bg-white rounded-full"></div>
                                 </div>
                             </div>
@@ -261,16 +280,12 @@
 
                 <!-- Botones de acción -->
                 <div class="flex justify-end space-x-4 pt-4">
-                    <button 
-                        id="cancelarBtn"
-                        class="px-6 py-3 bg-gray-700 border border-blue-500 hover:bg-gray-600 text-blue-400 font-semibold rounded-lg transition duration-200"
-                    >
+                    <button id="cancelarBtn"
+                        class="px-6 py-3 bg-gray-700 border border-blue-500 hover:bg-gray-600 text-blue-400 font-semibold rounded-lg transition duration-200">
                         Cancelar
                     </button>
-                    <button 
-                        id="iniciarRestauracionBtn"
-                        class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200"
-                    >
+                    <button id="iniciarRestauracionBtn"
+                        class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200">
                         Iniciar restauración
                     </button>
                 </div>
@@ -285,43 +300,43 @@
             display: inline-block;
             transition: background-color 0.2s ease;
         }
-        
+
         .toggle-switch.inactive {
             background-color: #6b7280;
         }
-        
+
         .toggle-switch.inactive .toggle-circle {
             transform: translateX(0.125rem) translateY(0.125rem);
         }
-        
+
         .radio-switch {
             position: relative;
             display: inline-block;
             transition: all 0.2s ease;
         }
-        
+
         .radio-switch.inactive {
             background-color: transparent;
         }
-        
+
         .radio-switch.inactive .radio-dot {
             opacity: 0;
         }
-        
+
         .tarjeta-dashboard {
             background-color: var(--color-tarjeta-fondo);
             border: 1px solid var(--color-borde-tarjeta);
         }
-        
+
         /* Animaciones suaves */
         .toggle-circle {
             transition: transform 0.2s ease-in-out;
         }
-        
+
         .radio-dot {
             transition: opacity 0.2s ease-in-out;
         }
-        
+
         /* Estilos para selects */
         select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
@@ -333,13 +348,13 @@
             -moz-appearance: none;
             appearance: none;
         }
-        
+
         /* Estilos para checkboxes pequeños */
         input[type="checkbox"]:not(.sr-only) {
             background-color: #374151;
             border: 1px solid #6b7280;
         }
-        
+
         input[type="checkbox"]:checked:not(.sr-only) {
             background-color: #3b82f6;
             border-color: #3b82f6;
@@ -349,23 +364,23 @@
     <!-- Importar módulos -->
     <script type="module">
         import { AuthStorage } from '/assets/js/config.js';
-        
+
         // Verificar autenticación
         if (!AuthStorage.isAuthenticated()) {
             window.location.href = '/login';
         }
     </script>
-    
+
     <!-- Scripts principales -->
     <script type="module" src="/assets/js/dashboard.js"></script>
     <script type="module" src="/assets/js/settings.js"></script>
-    
+
     <script>
         // Función para toggle del switch
         function toggleSwitch(switchId) {
             const switchElement = document.getElementById(switchId);
             const toggleElement = switchElement.nextElementSibling;
-            
+
             switchElement.checked = !switchElement.checked;
             if (switchElement.checked) {
                 toggleElement.classList.remove('inactive');
@@ -377,39 +392,39 @@
                 toggleElement.classList.add('bg-gray-600');
             }
         }
-        
+
         // Función para seleccionar radio button
         function selectRadio(radioId) {
             // Desactivar todos los radio buttons
             const radios = document.querySelectorAll('input[name="tipoRestauracion"]');
             const radioSwitches = document.querySelectorAll('.radio-switch');
-            
+
             radios.forEach(radio => {
                 radio.checked = false;
             });
-            
+
             radioSwitches.forEach(radioSwitch => {
                 radioSwitch.classList.add('inactive');
             });
-            
+
             // Activar el seleccionado
             const selectedRadio = document.getElementById(radioId);
             const selectedSwitch = selectedRadio.nextElementSibling;
-            
+
             selectedRadio.checked = true;
             selectedSwitch.classList.remove('inactive');
         }
-        
+
         // Hacer las funciones globales
         window.toggleSwitch = toggleSwitch;
         window.selectRadio = selectRadio;
-        
+
         // Inicializar estado de radio buttons
         document.addEventListener('DOMContentLoaded', () => {
             // Solo el primero debe estar activo
             const primeraOpcion = document.querySelector('.radio-switch:not(.inactive)');
             const otrasOpciones = document.querySelectorAll('.radio-switch');
-            
+
             otrasOpciones.forEach((radio, index) => {
                 if (index > 0) {
                     radio.classList.add('inactive');
@@ -418,4 +433,5 @@
         });
     </script>
 </body>
+
 </html>

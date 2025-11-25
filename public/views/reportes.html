@@ -45,6 +45,12 @@
                         <i data-lucide="package" class="w-5 h-5 mr-3"></i>
                         Inventario y Productos
                     </a>
+                    <a href="/membresias">
+                        <div class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                            <i data-lucide="credit-card" class="w-5 h-5 mr-3"></i>
+                            Membresías
+                        </div>
+                    </a>
                     <a href="/reportes"
                         class="nav-link nav-activo flex items-center p-3 rounded-lg text-sm font-medium">
                         <i data-lucide="file-text" class="w-5 h-5 mr-3"></i>
@@ -55,7 +61,8 @@
                         <i data-lucide="lock" class="w-5 h-5 mr-3"></i>
                         Gestión de Usuarios
                     </a>
-                    <a href="/perfil" class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
+                    <a href="/perfil"
+                        class="nav-link flex items-center p-3 rounded-lg text-sm font-medium text-gray-400">
                         <i data-lucide="user" class="w-5 h-5 mr-3"></i>
                         Gestión de Perfil
                     </a>
@@ -79,37 +86,44 @@
                 <div class="flex items-center space-x-4">
                     <span class="text-sm hidden sm:block" id="fecha-hora-header">Exportar en Excel</span>
                     <i data-lucide="bell" class="w-6 h-6 text-gray-400 hover:text-white cursor-pointer"></i>
-                    <i id="logoutBtn" data-lucide="log-out" class="w-6 h-6 text-gray-400 hover:text-white cursor-pointer"></i>
+                    <i id="logoutBtn" data-lucide="log-out"
+                        class="w-6 h-6 text-gray-400 hover:text-white cursor-pointer"></i>
                 </div>
             </header>
             <!-- Cambiar divs a botones funcionales -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <button id="reporte-inventario" class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
+                <button id="reporte-inventario"
+                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
                     <i data-lucide="package" class="w-12 h-12 mb-3" style="color: var(--color-azul-acento);"></i>
                     <h3 class="font-semibold text-center">Reporte de Inventario</h3>
                     <p class="text-xs text-gray-400 mt-1">Ver stock disponible</p>
                 </button>
-                <button id="reporte-socios" class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
+                <button id="reporte-socios"
+                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
                     <i data-lucide="users" class="w-12 h-12 mb-3" style="color: var(--color-rojo-principal);"></i>
                     <h3 class="font-semibold text-center">Reporte de Socios</h3>
                     <p class="text-xs text-gray-400 mt-1">Datos de membresías activas</p>
                 </button>
-                <button id="reporte-ventas" class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
+                <button id="reporte-ventas"
+                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
                     <i data-lucide="shopping-cart" class="w-12 h-12 mb-3" style="color: var(--color-azul-acento);"></i>
                     <h3 class="font-semibold text-center">Reporte de Ventas</h3>
                     <p class="text-xs text-gray-400 mt-1">Ingresos y transacciones</p>
                 </button>
-                <button id="reporte-pagos" class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
+                <button id="reporte-pagos"
+                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
                     <i data-lucide="credit-card" class="w-12 h-12 mb-3" style="color: var(--color-rojo-principal);"></i>
                     <h3 class="font-semibold text-center">Reporte de Pagos</h3>
                     <p class="text-xs text-gray-400 mt-1">Pagos de membresías</p>
                 </button>
-                <button id="reporte-visitantes" class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
+                <button id="reporte-visitantes"
+                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
                     <i data-lucide="trending-up" class="w-12 h-12 mb-3" style="color: var(--color-azul-acento);"></i>
                     <h3 class="font-semibold text-center">Reporte de Visitantes</h3>
                     <p class="text-xs text-gray-400 mt-1">Registro de entrada/salida</p>
                 </button>
-                <button id="reporte-general" class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
+                <button id="reporte-general"
+                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
                     <i data-lucide="bar-chart-3" class="w-12 h-12 mb-3" style="color: var(--color-rojo-principal);"></i>
                     <h3 class="font-semibold text-center">Reporte General</h3>
                     <p class="text-xs text-gray-400 mt-1">Resumen de operaciones</p>
