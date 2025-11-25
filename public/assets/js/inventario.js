@@ -44,7 +44,27 @@ async function cargarProductos(pagina = 1) {
   try {
     console.log("[Inventario] Cargando productos página:", pagina)
     
-    let url = `${API_ENDPOINTS.products}?page=${pagina}&limit=10`
+    // Construir query params con filtros
+    const params = new URLSearchParams({
+      page: pagina,
+      limit: 10
+    })
+    
+    // Añadir filtros activos si existen
+    if (filtrosActivos.busqueda) {
+      params.append('search', filtrosActivos.busqueda)
+    }
+    if (filtrosActivos.status) {
+      params.append('status_producto', filtrosActivos.status)
+    }
+    if (filtrosActivos.precio_min) {
+      params.append('precio_min', filtrosActivos.precio_min)
+    }
+    if (filtrosActivos.precio_max) {
+      params.append('precio_max', filtrosActivos.precio_max)
+    }
+    
+    let url = `${API_ENDPOINTS.products}?${params}`
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -63,6 +83,7 @@ async function cargarProductos(pagina = 1) {
     totalPaginas = data.data.pagination?.total_pages || 1
     
     console.log("[Inventario] Productos cargados:", productosActuales.length)
+    console.log("[Debug] Producto ejemplo:", productosActuales[0])
     renderizarProductos()
     renderizarPaginacion()
     
@@ -82,14 +103,37 @@ function renderizarProductos() {
   if (!tbody) return
   
   if (productosActuales.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-400">No hay productos registrados</td></tr>'
+    tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-400">No hay productos registrados</td></tr>'
     return
   }
 
   tbody.innerHTML = productosActuales.map(prod => {
-    const statusColor = prod.status_producto === 'en stock' ? '#00DA68' : '#FF3D3D'
-    const statusBg = prod.status_producto === 'en stock' ? 'rgba(75, 181, 67, 0.2)' : 'rgba(255, 61, 61, 0.2)'
-    const statusText = prod.status_producto === 'en stock' ? 'En Stock' : 'Agotado'
+    // Determinar colores basado en el status del producto
+    let statusColor, statusBg, statusText
+    const cantidadStock = prod.cantidad_stock || 0
+    const stockMinimo = prod.stock_minimo || 0
+    
+    switch(prod.status_producto) {
+      case 'en stock':
+        statusColor = '#00DA68'
+        statusBg = 'rgba(75, 181, 67, 0.2)'
+        statusText = 'En Stock'
+        break
+      case 'stock bajo':
+        statusColor = '#FFA500'
+        statusBg = 'rgba(255, 165, 0, 0.2)'
+        statusText = 'Stock Bajo'
+        break
+      case 'agotado':
+        statusColor = '#FF3D3D'
+        statusBg = 'rgba(255, 61, 61, 0.2)'
+        statusText = 'Agotado'
+        break
+      default:
+        statusColor = '#888'
+        statusBg = 'rgba(136, 136, 136, 0.2)'
+        statusText = 'Sin Estado'
+    }
     
     return `
       <tr class="hover:bg-gray-700 transition">
@@ -98,6 +142,10 @@ function renderizarProductos() {
         <td class="px-6 py-4 whitespace-nowrap text-sm">${prod.descripcion || 'Sin descripción'}</td>
         <td class="px-6 py-4 whitespace-nowrap text-sm">$${parseFloat(prod.costo || 0).toFixed(2)}</td>
         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">$${parseFloat(prod.precio || 0).toFixed(2)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
+          <div class="font-medium text-white">${cantidadStock}</div>
+          <div class="text-xs text-gray-400">min: ${stockMinimo}</div>
+        </td>
         <td class="px-6 py-4 whitespace-nowrap text-center">
           <span class="px-2 py-1 text-xs rounded-full font-semibold" style="background-color: ${statusBg}; color: ${statusColor};">
             ${statusText}
@@ -200,6 +248,8 @@ async function verProducto(productoId) {
           <p><strong>Descripción:</strong> ${producto.descripcion || 'Sin descripción'}</p>
           <p><strong>Costo:</strong> $${parseFloat(producto.costo).toFixed(2)}</p>
           <p><strong>Precio:</strong> $${parseFloat(producto.precio).toFixed(2)}</p>
+          <p><strong>Cantidad en Stock:</strong> ${producto.cantidad_stock || 0}</p>
+          <p><strong>Stock Mínimo:</strong> ${producto.stock_minimo || 0}</p>
           <p><strong>Estado:</strong> ${producto.status_producto}</p>
           <p><strong>Creado:</strong> ${fechaCreacion}</p>
           <p><strong>Actualizado:</strong> ${fechaActualizacion}</p>
@@ -226,15 +276,35 @@ async function crearProducto() {
     title: 'Nuevo Producto',
     html: `
       <div class="space-y-4">
-        <input id="codigo" type="text" placeholder="Código del producto" class="swal2-input" required>
-        <input id="nombre" type="text" placeholder="Nombre del producto" class="swal2-input" required>
-        <textarea id="descripcion" placeholder="Descripción (opcional)" class="swal2-textarea"></textarea>
-        <input id="costo" type="number" step="0.01" placeholder="Costo" class="swal2-input" required>
-        <input id="precio" type="number" step="0.01" placeholder="Precio de venta" class="swal2-input" required>
-        <select id="status" class="swal2-select">
-          <option value="en stock">En Stock</option>
-          <option value="agotado">Agotado</option>
-        </select>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Código del Producto:</label>
+          <input id="codigo" type="text" placeholder="Código único del producto (ej: PROD-001)" class="swal2-input" required>
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Nombre del Producto:</label>
+          <input id="nombre" type="text" placeholder="Nombre descriptivo del producto" class="swal2-input" required>
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Descripción:</label>
+          <textarea id="descripcion" placeholder="Descripción detallada del producto (opcional)" class="swal2-textarea"></textarea>
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Costo de Adquisición:</label>
+          <input id="costo" type="number" step="0.01" placeholder="Precio al que compramos el producto" class="swal2-input" required>
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Precio de Venta:</label>
+          <input id="precio" type="number" step="0.01" placeholder="Precio al que vendemos el producto" class="swal2-input" required>
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Cantidad en Stock:</label>
+          <input id="cantidad_stock" type="number" min="0" placeholder="Unidades disponibles en inventario" class="swal2-input" required>
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Stock Mínimo:</label>
+          <input id="stock_minimo" type="number" min="0" placeholder="Cantidad mínima antes de reabastecer" class="swal2-input" required>
+        </div>
+        <small style="color: #888; display: block; margin-top: 10px; text-align: center;">💡 El estado se calculará automáticamente: En Stock, Stock Bajo o Agotado</small>
       </div>
     `,
     focusConfirm: false,
@@ -244,10 +314,11 @@ async function crearProducto() {
       const descripcion = document.getElementById('descripcion').value
       const costo = parseFloat(document.getElementById('costo').value)
       const precio = parseFloat(document.getElementById('precio').value)
-      const status = document.getElementById('status').value
+      const cantidad_stock = parseInt(document.getElementById('cantidad_stock').value)
+      const stock_minimo = parseInt(document.getElementById('stock_minimo').value)
       
-      if (!codigo || !nombre || !costo || !precio) {
-        Swal.showValidationMessage('Por favor completa todos los campos obligatorios')
+      if (!codigo || !nombre || !costo || !precio || cantidad_stock < 0 || stock_minimo < 0) {
+        Swal.showValidationMessage('Por favor completa todos los campos obligatorios con valores válidos')
         return false
       }
       
@@ -256,7 +327,15 @@ async function crearProducto() {
         return false
       }
       
-      return { codigo_producto: codigo, nombre_producto: nombre, descripcion, costo, precio, status_producto: status }
+      return { 
+        codigo_producto: codigo, 
+        nombre_producto: nombre, 
+        descripcion, 
+        costo, 
+        precio, 
+        cantidad_stock,
+        stock_minimo
+      }
     },
     showCancelButton: true,
     confirmButtonText: 'Crear Producto',
@@ -311,15 +390,35 @@ async function editarProducto(productoId) {
     title: 'Editar Producto',
     html: `
       <div class="space-y-4">
-        <input id="codigo" type="text" value="${producto.codigo_producto}" placeholder="Código del producto" class="swal2-input">
-        <input id="nombre" type="text" value="${producto.nombre_producto}" placeholder="Nombre del producto" class="swal2-input">
-        <textarea id="descripcion" placeholder="Descripción (opcional)" class="swal2-textarea">${producto.descripcion || ''}</textarea>
-        <input id="costo" type="number" step="0.01" value="${producto.costo}" placeholder="Costo" class="swal2-input">
-        <input id="precio" type="number" step="0.01" value="${producto.precio}" placeholder="Precio de venta" class="swal2-input">
-        <select id="status" class="swal2-select">
-          <option value="en stock" ${producto.status_producto === 'en stock' ? 'selected' : ''}>En Stock</option>
-          <option value="agotado" ${producto.status_producto === 'agotado' ? 'selected' : ''}>Agotado</option>
-        </select>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Código del Producto:</label>
+          <input id="codigo" type="text" value="${producto.codigo_producto}" placeholder="Código único del producto (ej: PROD-001)" class="swal2-input">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Nombre del Producto:</label>
+          <input id="nombre" type="text" value="${producto.nombre_producto}" placeholder="Nombre descriptivo del producto" class="swal2-input">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Descripción:</label>
+          <textarea id="descripcion" placeholder="Descripción detallada del producto (opcional)" class="swal2-textarea">${producto.descripcion || ''}</textarea>
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Costo de Adquisición:</label>
+          <input id="costo" type="number" step="0.01" value="${producto.costo}" placeholder="Precio al que compramos el producto" class="swal2-input">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Precio de Venta:</label>
+          <input id="precio" type="number" step="0.01" value="${producto.precio}" placeholder="Precio al que vendemos el producto" class="swal2-input">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Cantidad en Stock:</label>
+          <input id="cantidad_stock" type="number" min="0" value="${producto.cantidad_stock || 0}" placeholder="Unidades disponibles en inventario" class="swal2-input">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Stock Mínimo:</label>
+          <input id="stock_minimo" type="number" min="0" value="${producto.stock_minimo || 0}" placeholder="Cantidad mínima antes de reabastecer" class="swal2-input">
+        </div>
+        <small style="color: #888; display: block; margin-top: 10px; text-align: center;">💡 El estado se calculará automáticamente: En Stock, Stock Bajo o Agotado</small>
       </div>
     `,
     focusConfirm: false,
@@ -329,10 +428,11 @@ async function editarProducto(productoId) {
       const descripcion = document.getElementById('descripcion').value
       const costo = parseFloat(document.getElementById('costo').value)
       const precio = parseFloat(document.getElementById('precio').value)
-      const status = document.getElementById('status').value
+      const cantidad_stock = parseInt(document.getElementById('cantidad_stock').value)
+      const stock_minimo = parseInt(document.getElementById('stock_minimo').value)
       
-      if (!codigo || !nombre || !costo || !precio) {
-        Swal.showValidationMessage('Por favor completa todos los campos obligatorios')
+      if (!codigo || !nombre || !costo || !precio || cantidad_stock < 0 || stock_minimo < 0) {
+        Swal.showValidationMessage('Por favor completa todos los campos obligatorios con valores válidos')
         return false
       }
       
@@ -341,7 +441,15 @@ async function editarProducto(productoId) {
         return false
       }
       
-      return { codigo_producto: codigo, nombre_producto: nombre, descripcion, costo, precio, status_producto: status }
+      return { 
+        codigo_producto: codigo, 
+        nombre_producto: nombre, 
+        descripcion, 
+        costo, 
+        precio, 
+        cantidad_stock,
+        stock_minimo
+      }
     },
     showCancelButton: true,
     confirmButtonText: 'Actualizar',
@@ -528,7 +636,7 @@ if (crearProductoBtn) {
 }
 
 // Búsqueda en tiempo real
-const inputBusqueda = document.querySelector('input[placeholder="Ej. Proteína"]')
+const inputBusqueda = document.getElementById('campo-busqueda')
 if (inputBusqueda) {
   let timeoutId = null
   inputBusqueda.addEventListener('input', (e) => {
@@ -546,22 +654,21 @@ if (inputBusqueda) {
 }
 
 // Filtro por estado
-const selectEstado = document.querySelector('select')
+const selectEstado = document.getElementById('filtro-estado')
 if (selectEstado) {
   selectEstado.addEventListener('change', (e) => {
     const estado = e.target.value
-    if (estado === 'Todos') {
+    console.log("[Inventario] Filtro por estado seleccionado:", estado)
+    if (estado === '') {
       cargarProductos(1)
-    } else if (estado === 'En Stock') {
-      filtrarProductos({ status: 'en stock' })
-    } else if (estado === 'Agotado') {
-      filtrarProductos({ status: 'agotado' })
+    } else {
+      filtrarProductos({ status: estado })
     }
   })
 }
 
 // Botón aplicar filtros
-const btnFiltros = document.querySelector('.btn-secundario')
+const btnFiltros = document.getElementById('btn-aplicar-filtros')
 if (btnFiltros) {
   btnFiltros.addEventListener('click', async () => {
     const { value: formValues } = await Swal.fire({
@@ -571,6 +678,7 @@ if (btnFiltros) {
           <select id="status-filter" class="swal2-select">
             <option value="">Todos los estados</option>
             <option value="en stock">En Stock</option>
+            <option value="stock bajo">Stock Bajo</option>
             <option value="agotado">Agotado</option>
           </select>
           <input id="precio-min" type="number" step="0.01" placeholder="Precio mínimo" class="swal2-input">
@@ -602,6 +710,40 @@ if (btnFiltros) {
         cargarProductos(1)
       }
     }
+  })
+}
+
+// Botón limpiar filtros
+const btnLimpiarFiltros = document.getElementById('btn-limpiar-filtros')
+if (btnLimpiarFiltros) {
+  btnLimpiarFiltros.addEventListener('click', () => {
+    console.log("[Inventario] Limpiando todos los filtros")
+    
+    // Limpiar campo de búsqueda
+    const inputBusqueda = document.getElementById('campo-busqueda')
+    if (inputBusqueda) {
+      inputBusqueda.value = ''
+    }
+    
+    // Resetear selector de estado
+    const selectEstado = document.getElementById('filtro-estado')
+    if (selectEstado) {
+      selectEstado.value = ''
+    }
+    
+    // Recargar todos los productos
+    cargarProductos(1)
+    
+    // Mostrar notificación
+    Swal.fire({
+      icon: 'success',
+      title: 'Filtros Limpiados',
+      text: 'Se han eliminado todos los filtros aplicados',
+      showConfirmButton: false,
+      timer: 1500,
+      toast: true,
+      position: 'top-end'
+    })
   })
 }
 
