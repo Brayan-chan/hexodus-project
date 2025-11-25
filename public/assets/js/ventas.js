@@ -10,6 +10,20 @@ if (!AuthStorage.isAuthenticated()) {
 let ventasActuales = []
 let productosDisponibles = []
 let carrito = []
+let paginacionActual = {
+  current_page: 1,
+  per_page: 10,
+  total: 0,
+  total_pages: 0,
+  has_next_page: false,
+  has_prev_page: false
+}
+let filtrosActivos = {
+  search: '',
+  metodo_pago: '',
+  sortBy: 'fecha_creacion',
+  sortOrder: 'desc'
+}
 
 lucide.createIcons()
 
@@ -65,11 +79,18 @@ async function cargarProductosDisponibles() {
 }
 
 // 📋 CARGAR VENTAS
-async function cargarVentas() {
+async function cargarVentas(page = 1) {
   try {
-    console.log("[Ventas] Cargando ventas desde:", API_ENDPOINTS.sales)
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: paginacionActual.per_page.toString(),
+      sortBy: filtrosActivos.sortBy,
+      sortOrder: filtrosActivos.sortOrder
+    })
     
-    const response = await fetch(API_ENDPOINTS.sales, {
+    console.log("[Ventas] Cargando ventas desde:", `${API_ENDPOINTS.sales}?${params}`)
+    
+    const response = await fetch(`${API_ENDPOINTS.sales}?${params}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${AuthStorage.getToken()}`,
@@ -83,8 +104,13 @@ async function cargarVentas() {
     }
     
     ventasActuales = data.data?.ventas || []
+    paginacionActual = data.data?.pagination || paginacionActual
+    
     console.log("[Ventas] Ventas cargadas:", ventasActuales.length)
+    console.log("[Ventas] Paginación:", paginacionActual)
+    
     renderizarVentas()
+    renderizarPaginacion()
     
   } catch (error) {
     console.error("[Ventas] Error al cargar ventas:", error)
@@ -95,6 +121,75 @@ async function cargarVentas() {
     })
   }
 }
+
+// 🎨 RENDERIZAR PAGINACIÓN
+function renderizarPaginacion() {
+  const paginacionContainer = document.getElementById('paginacion-ventas')
+  if (!paginacionContainer) return
+  
+  const { current_page, total_pages, has_prev_page, has_next_page, total } = paginacionActual
+  
+  paginacionContainer.innerHTML = `
+    <div class="flex items-center justify-between mt-6">
+      <div class="text-sm text-gray-400">
+        Mostrando ${ventasActuales.length} de ${total} ventas
+      </div>
+      <div class="flex items-center space-x-2">
+        <button 
+          ${!has_prev_page ? 'disabled' : ''} 
+          onclick="cambiarPagina(${current_page - 1})" 
+          class="px-3 py-2 text-sm rounded-lg ${!has_prev_page ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-500'}">
+          Anterior
+        </button>
+        
+        <div class="flex items-center space-x-1">
+          ${generarNumerosPagina(current_page, total_pages)}
+        </div>
+        
+        <button 
+          ${!has_next_page ? 'disabled' : ''} 
+          onclick="cambiarPagina(${current_page + 1})" 
+          class="px-3 py-2 text-sm rounded-lg ${!has_next_page ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-gray-600 text-white hover:bg-gray-500'}">
+          Siguiente
+        </button>
+      </div>
+    </div>
+  `
+}
+
+function generarNumerosPagina(currentPage, totalPages) {
+  const maxVisible = 5
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2))
+  let endPage = Math.min(totalPages, startPage + maxVisible - 1)
+  
+  if (endPage - startPage + 1 < maxVisible) {
+    startPage = Math.max(1, endPage - maxVisible + 1)
+  }
+  
+  let pages = []
+  
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(`
+      <button 
+        onclick="cambiarPagina(${i})" 
+        class="px-3 py-2 text-sm rounded-lg ${i === currentPage ? 'bg-red-600 text-white' : 'bg-gray-600 text-white hover:bg-gray-500'}">
+        ${i}
+      </button>
+    `)
+  }
+  
+  return pages.join('')
+}
+
+function cambiarPagina(page) {
+  if (page < 1 || page > paginacionActual.total_pages) return
+  cargarVentas(page)
+}
+
+// Hacer funciones disponibles globalmente
+window.cambiarPagina = cambiarPagina
+window.eliminarDelCarrito = eliminarDelCarrito
+window.limpiarFiltros = limpiarFiltros
 
 // 🎨 RENDERIZAR VENTAS EN LA TABLA
 function renderizarVentas() {
@@ -266,7 +361,7 @@ async function eliminarVenta(ventaId) {
         confirmButtonColor: '#ff3b3b'
       })
       
-      cargarVentas()
+      cargarVentas(paginacionActual.current_page)
       
     } catch (error) {
       console.error("[Ventas] Error al eliminar venta:", error)
@@ -341,6 +436,92 @@ function actualizarVistaCarrito() {
   lucide.createIcons()
 }
 
+// 🔍 BÚSQUEDA Y FILTROS
+async function buscarVentas() {
+  const searchInput = document.getElementById('buscar-venta')
+  const metodoPagoSelect = document.getElementById('metodo-pago-filtro')
+  
+  if (!searchInput || !metodoPagoSelect) return
+  
+  const searchTerm = searchInput.value.trim()
+  const metodoPago = metodoPagoSelect.value
+  
+  try {
+    let url = API_ENDPOINTS.sales
+    const params = new URLSearchParams({
+      page: '1',
+      limit: paginacionActual.per_page.toString(),
+      sortBy: filtrosActivos.sortBy,
+      sortOrder: filtrosActivos.sortOrder
+    })
+    
+    // Si hay términos de búsqueda, usar endpoint de búsqueda
+    if (searchTerm) {
+      url = `${API_ENDPOINTS.sales}/search`
+      params.append('search', searchTerm)
+    }
+    
+    console.log("[Ventas] Buscando ventas:", { searchTerm, metodoPago })
+    
+    const response = await fetch(`${url}?${params}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${AuthStorage.getToken()}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    
+    const data = await response.json()
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || 'Error al buscar ventas')
+    }
+    
+    let ventas = data.data?.ventas || []
+    
+    // Filtrar por método de pago en el frontend si es necesario
+    if (metodoPago && metodoPago !== 'todos') {
+      ventas = ventas.filter(venta => {
+        const metodo = venta.observaciones?.toLowerCase().includes(metodoPago.toLowerCase())
+        return metodo
+      })
+    }
+    
+    ventasActuales = ventas
+    
+    // Actualizar paginación para resultados de búsqueda
+    paginacionActual = {
+      current_page: 1,
+      per_page: paginacionActual.per_page,
+      total: ventas.length,
+      total_pages: 1,
+      has_next_page: false,
+      has_prev_page: false
+    }
+    
+    renderizarVentas()
+    renderizarPaginacion()
+    
+  } catch (error) {
+    console.error("[Ventas] Error al buscar:", error)
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.message || 'Error al buscar ventas'
+    })
+  }
+}
+
+function limpiarFiltros() {
+  const searchInput = document.getElementById('buscar-venta')
+  const metodoPagoSelect = document.getElementById('metodo-pago-filtro')
+  
+  if (searchInput) searchInput.value = ''
+  if (metodoPagoSelect) metodoPagoSelect.value = 'todos'
+  
+  // Recargar ventas sin filtros
+  cargarVentas(1)
+}
+
 // ➕ CREAR NUEVA VENTA
 async function crearNuevaVenta() {
   await cargarProductosDisponibles() // Asegurar productos actualizados
@@ -401,10 +582,20 @@ async function crearNuevaVenta() {
       const metodoPago = document.getElementById('metodo-pago').value
       const total = carrito.reduce((sum, item) => sum + item.subtotal, 0)
       
+      // Convertir carrito para que coincida con el schema del backend
+      const productosParaBackend = carrito.map(item => ({
+        producto_id: item.id, // Cambiar 'id' por 'producto_id'
+        codigo_producto: item.codigo_producto,
+        nombre_producto: item.nombre_producto,
+        cantidad: item.cantidad,
+        precio_unitario: item.precio_unitario,
+        subtotal: item.subtotal
+      }))
+      
       return {
-        productos: carrito,
-        metodo_pago: metodoPago,
-        total: total
+        productos: productosParaBackend,
+        observaciones: `Método de pago: ${metodoPago}`,
+        total: total // Mantener para el frontend, aunque el backend no lo use
       }
     },
     didOpen: () => {
@@ -448,13 +639,19 @@ async function crearNuevaVenta() {
     try {
       console.log("[Ventas] Procesando venta:", formResult)
       
+      // Crear objeto para enviar al backend (sin el campo total)
+      const ventaData = {
+        productos: formResult.productos,
+        observaciones: formResult.observaciones
+      }
+      
       const response = await fetch(API_ENDPOINTS.sales, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${AuthStorage.getToken()}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formResult)
+        body: JSON.stringify(ventaData)
       })
       
       const data = await response.json()
@@ -470,7 +667,7 @@ async function crearNuevaVenta() {
       })
       
       carrito = [] // Limpiar carrito
-      cargarVentas()
+      cargarVentas(paginacionActual.current_page) // Mantener página actual
       
     } catch (error) {
       console.error("[Ventas] Error al crear venta:", error)
@@ -487,6 +684,27 @@ async function crearNuevaVenta() {
 const crearVentaBtn = document.querySelector('.btn-principal')
 if (crearVentaBtn) {
   crearVentaBtn.addEventListener('click', crearNuevaVenta)
+}
+
+// Event listeners para filtros
+const aplicarFiltrosBtn = document.getElementById('aplicar-filtros-btn')
+if (aplicarFiltrosBtn) {
+  aplicarFiltrosBtn.addEventListener('click', buscarVentas)
+}
+
+const limpiarFiltrosBtn = document.getElementById('limpiar-filtros-btn')
+if (limpiarFiltrosBtn) {
+  limpiarFiltrosBtn.addEventListener('click', limpiarFiltros)
+}
+
+// Búsqueda en tiempo real
+const buscarInput = document.getElementById('buscar-venta')
+if (buscarInput) {
+  let timeoutId
+  buscarInput.addEventListener('input', () => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(buscarVentas, 500) // Búsqueda con delay de 500ms
+  })
 }
 
 const menuToggle = document.getElementById('menu-toggle')

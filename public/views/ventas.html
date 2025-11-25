@@ -94,21 +94,25 @@
                         <h2 class="text-xl font-semibold mb-4" style="color: var(--color-azul-acento);">Filtros</h2>
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-2 text-gray-400">Buscar venta</label>
-                            <input type="text" placeholder="Número de venta o cliente"
+                            <input id="buscar-venta" type="text" placeholder="Número de venta o producto"
                                 class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white">
                         </div>
                         <div class="mb-4">
                             <label class="block text-sm font-medium mb-2 text-gray-400">Método de pago</label>
-                            <select
+                            <select id="metodo-pago-filtro"
                                 class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white">
-                                <option>Todos</option>
-                                <option>Efectivo</option>
-                                <option>Tarjeta</option>
-                                <option>Transferencia</option>
+                                <option value="todos">Todos</option>
+                                <option value="efectivo">Efectivo</option>
+                                <option value="tarjeta">Tarjeta</option>
+                                <option value="transferencia">Transferencia</option>
                             </select>
                         </div>
-                        <button class="btn-secundario w-full py-2 font-medium rounded-lg uppercase">Aplicar
-                            Filtros</button>
+                        <div class="space-y-2">
+                            <button id="aplicar-filtros-btn" class="btn-secundario w-full py-2 font-medium rounded-lg uppercase">Aplicar
+                                Filtros</button>
+                            <button id="limpiar-filtros-btn" class="w-full py-2 font-medium rounded-lg uppercase border border-gray-600 text-gray-400 hover:bg-gray-800">Limpiar
+                                Filtros</button>
+                        </div>
                     </div>
                 </div>
                 <div class="lg:col-span-3">
@@ -138,6 +142,8 @@
                                 <tbody class="divide-y divide-gray-800"></tbody>
                             </table>
                         </div>
+                        <!-- Controles de Paginación -->
+                        <div id="paginacion-ventas"></div>
                     </div>
                 </div>
             </div>
