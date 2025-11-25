@@ -41,32 +41,92 @@ body {
 /* Estilos del Botón Principal (Rojo Neón) */
 .btn-principal {
     background-color: var(--color-rojo-principal);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
     box-shadow: 0 0 10px rgba(255, 59, 59, 0.5);
-    transition: all 0.3s;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-principal:hover {
     background-color: #FF5A5A;
     box-shadow: 0 0 20px rgba(255, 59, 59, 1);
+    transform: translateY(-2px);
+}
+
+.btn-principal:disabled {
+    background-color: #6B7280;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
 }
 
 /* Estilos del Botón Secundario (Azul Neón - Usado en Filtros) */
 .btn-secundario {
+    background-color: transparent;
     color: var(--color-azul-acento);
-    border: 1px solid var(--color-azul-acento);
-    transition: all 0.3s;
+    border: 2px solid var(--color-azul-acento);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-secundario:hover {
     background-color: rgba(0, 191, 255, 0.1);
     box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+    transform: translateY(-2px);
 }
 
-/* Estilos de Campo de Texto en Focus (Borde Azul Neón) */
+/* Estilos de Campo de Texto (Mejorados para visibilidad) */
+.input-neon {
+    background-color: #2D2D32;
+    border: 2px solid #404040;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: #FFFFFF;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.input-neon::placeholder {
+    color: #9CA3AF;
+}
+
 .input-neon:focus {
     border-color: var(--color-azul-acento) !important;
     box-shadow: 0 0 8px rgba(0, 191, 255, 0.5);
     outline: none;
+    background-color: #363640;
+}
+
+/* Estilos para select */
+select.input-neon {
+    background-color: #2D2D32;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239CA3AF' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    appearance: none;
+}
+
+select.input-neon option {
+    background-color: #2D2D32;
+    color: #FFFFFF;
 }
 
 /* Estilo para Scrollbars de Tablas */
@@ -119,4 +179,106 @@ body {
 .encabezado-dashboard {
     background-color: var(--color-fondo-oscuro);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Estilos adicionales para botones de acción */
+.btn-accion {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-accion:hover {
+    transform: translateY(-1px);
+}
+
+.btn-ver {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: #22C55E;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.btn-ver:hover {
+    background-color: rgba(34, 197, 94, 0.2);
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+}
+
+.btn-editar {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3B82F6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.btn-editar:hover {
+    background-color: rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+.btn-eliminar {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.btn-eliminar:hover {
+    background-color: rgba(239, 68, 68, 0.2);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+.btn-toggle {
+    background-color: rgba(168, 85, 247, 0.1);
+    color: #A855F7;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.btn-toggle:hover {
+    background-color: rgba(168, 85, 247, 0.2);
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+}
+
+/* Mejorar estilos de badges/estados */
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.badge-activo {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: #22C55E;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.badge-inactivo {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Estilos para mejorar la legibilidad de la tabla */
+.tabla-contenedor {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background-color: var(--color-tarjeta-fondo);
+}
+
+.tabla-header {
+    background-color: #1F2937;
+}
+
+.tabla-row {
+    background-color: var(--color-tarjeta-fondo);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tabla-row:hover {
+    background-color: rgba(255, 255, 255, 0.02);
 }
