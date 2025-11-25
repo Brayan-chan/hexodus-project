@@ -107,7 +107,7 @@
                     <i data-lucide="bell"
                         class="w-6 h-6 text-gray-400 hover:text-white transition duration-200 cursor-pointer"
                         title="Notificaciones"></i>
-                    <i data-lucide="log-out"
+                    <i data-lucide="log-out" id="logoutBtn"
                         class="w-6 h-6 text-gray-400 hover:text-white transition duration-200 cursor-pointer"
                         title="Cerrar Sesión"></i>
                 </div>
@@ -140,33 +140,30 @@
 
                         <!-- Búsqueda Principal (RF07) -->
                         <div class="mb-4">
-                            <label for="buscar" class="block text-sm font-medium mb-2 text-gray-400">Buscar (Clave,
-                                Nombre, Correo)</label>
+                            <label for="busqueda-socios" class="block text-sm font-medium mb-2 text-gray-400">Buscar (Nombre, Correo, ID)</label>
                             <div class="relative">
                                 <i data-lucide="search"
                                     class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"></i>
-                                <input type="text" id="buscar" placeholder="Ej. Juan Pérez o #1024"
+                                <input type="text" id="busqueda-socios" placeholder="Ej. Juan Pérez o maría@email.com"
                                     class="input-neon w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
                             </div>
                         </div>
 
-                        <!-- Filtro de Estatus -->
+                        <!-- Filtros por Estado -->
                         <div class="mb-4">
-                            <label for="estatus" class="block text-sm font-medium mb-2 text-gray-400">Filtrar por
-                                Estatus</label>
-                            <select id="estatus"
-                                class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white appearance-none focus:ring-0">
-                                <option value="todos">Todos los Socios</option>
-                                <option value="activo">Membresía Activa</option>
-                                <option value="adeudo">Con Adeudo</option>
-                                <option value="expirado">Expirado/Inactivo</option>
-                            </select>
+                            <label class="block text-sm font-medium mb-2 text-gray-400">Filtrar por Estado</label>
+                            <div class="grid grid-cols-1 gap-2">
+                                <button id="filtro-todos" class="bg-blue-600 text-white px-3 py-2 rounded text-sm font-medium transition">
+                                    Todos
+                                </button>
+                                <button id="filtro-activos" class="bg-gray-700 text-gray-300 px-3 py-2 rounded text-sm font-medium transition hover:bg-gray-600">
+                                    Activos
+                                </button>
+                                <button id="filtro-inactivos" class="bg-gray-700 text-gray-300 px-3 py-2 rounded text-sm font-medium transition hover:bg-gray-600">
+                                    Inactivos
+                                </button>
+                            </div>
                         </div>
-
-                        <!-- Botón de Aplicar Filtros -->
-                        <button class="btn-secundario w-full py-2 mt-2 font-medium rounded-lg uppercase">
-                            Aplicar Filtros
-                        </button>
                     </div>
 
                 </div>
@@ -187,94 +184,35 @@
                                     <tr>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">
-                                            Clave</th>
+                                            ID</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">
-                                            Nombre</th>
+                                            Socio</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">
+                                            Teléfono</th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">
                                             Membresía</th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">
-                                            Vencimiento</th>
+                                            class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-300">
+                                            Estado Membresía</th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">
-                                            Estatus de Pago</th>
+                                            class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-300">
+                                            Estado Socio</th>
                                         <th
                                             class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-300">
                                             Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-800">
-                                    <!-- Fila de Ejemplo 1: Activo y al corriente -->
-                                    <tr class="hover:bg-gray-700 transition duration-200">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">#1024</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Juan López Pérez</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Anual Premium</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-400">15/09/2026</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                                            <span
-                                                class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                                style="background-color: rgba(75, 181, 67, 0.2); color: var(--color-exito);">Al
-                                                Corriente</span>
-                                        </td>
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
-                                            <button class="text-gray-400 hover:text-yellow-400"
-                                                title="Editar Socio (RF08)"><i data-lucide="square-pen"
-                                                    class="w-5 h-5"></i></button>
-                                            <button class="text-gray-400 hover:text-red-500"
-                                                title="Eliminar Socio (RF13)"><i data-lucide="trash-2"
-                                                    class="w-5 h-5"></i></button>
-                                        </td>
-                                    </tr>
-                                    <!-- Fila de Ejemplo 2: Con Adeudo -->
-                                    <tr class="hover:bg-gray-700 transition duration-200">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">#1055</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Andrea González</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Mensual</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-400">01/10/2025</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                                            <span
-                                                class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                                style="background-color: rgba(255, 0, 0, 0.2); color: var(--color-peligro);">Adeudo</span>
-                                        </td>
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
-                                            <button class="text-gray-400 hover:text-yellow-400"
-                                                title="Editar Socio (RF08)"><i data-lucide="square-pen"
-                                                    class="w-5 h-5"></i></button>
-                                            <button class="text-gray-400 hover:text-red-500"
-                                                title="Eliminar Socio (RF13)"><i data-lucide="trash-2"
-                                                    class="w-5 h-5"></i></button>
-                                        </td>
-                                    </tr>
-                                    <!-- Fila de Ejemplo 3: Próximo a vencer -->
-                                    <tr class="hover:bg-gray-700 transition duration-200">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-white">#1080</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Carlos Ortíz</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Trimestral</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-yellow-400">10/10/2025</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-center">
-                                            <span
-                                                class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                                style="background-color: rgba(255, 215, 0, 0.2); color: var(--color-alerta);">Próx.
-                                                Venc.</span>
-                                        </td>
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
-                                            <button class="text-gray-400 hover:text-yellow-400"
-                                                title="Editar Socio (RF08)"><i data-lucide="square-pen"
-                                                    class="w-5 h-5"></i></button>
-                                            <button class="text-gray-400 hover:text-red-500"
-                                                title="Eliminar Socio (RF13)"><i data-lucide="trash-2"
-                                                    class="w-5 h-5"></i></button>
-                                        </td>
-                                    </tr>
-                                    <!-- Aquí iría el resto de la tabla... -->
+                                    <!-- Los datos se cargarán dinámicamente aquí -->
                                 </tbody>
                             </table>
                         </div>
+                        
+                        <!-- Paginación -->
+                        <div id="paginacion"></div>
                     </div>
                 </div>
 
@@ -294,9 +232,9 @@
                 class="inline-block tarjeta modal-contenido overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-xl sm:w-full my-8 text-left">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6 border-b pb-4 border-gray-700">
-                        <h3 class="text-2xl font-bold" style="color: var(--color-rojo-principal);">
-                            <i data-lucide="user-plus" class="inline w-6 h-6 mr-2"></i> Registrar Nuevo Socio (RF12)
-                        </h3>
+                        <h2 class="text-2xl font-bold" style="color: var(--color-rojo-principal);">
+                            <i data-lucide="user-plus" class="inline w-6 h-6 mr-2"></i> Agregar Nuevo Socio
+                        </h2>
                         <button id="btn-cerrar-modal" class="text-gray-400 hover:text-white transition duration-200">
                             <i data-lucide="x" class="w-6 h-6"></i>
                         </button>
@@ -309,9 +247,18 @@
                         </h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>
-                                <label for="nombre-socio" class="block text-sm font-medium mb-1 text-gray-400">Nombre
-                                    Completo <span class="text-red-500">*</span></label>
+                                <label for="nombre-socio" class="block text-sm font-medium mb-1 text-gray-400">Nombre <span class="text-red-500">*</span></label>
                                 <input type="text" id="nombre-socio" required
+                                    class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
+                            </div>
+                            <div>
+                                <label for="apellido-paterno" class="block text-sm font-medium mb-1 text-gray-400">Apellido Paterno</label>
+                                <input type="text" id="apellido-paterno"
+                                    class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
+                            </div>
+                            <div>
+                                <label for="apellido-materno" class="block text-sm font-medium mb-1 text-gray-400">Apellido Materno</label>
+                                <input type="text" id="apellido-materno"
                                     class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
                             </div>
                             <div>
@@ -320,43 +267,40 @@
                                 <input type="email" id="correo-socio" required
                                     class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
                             </div>
-                            <div>
+                            <div class="md:col-span-2">
                                 <label for="telefono-socio" class="block text-sm font-medium mb-1 text-gray-400">Número
                                     de Teléfono</label>
                                 <input type="tel" id="telefono-socio"
                                     class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
                             </div>
-                            <div>
-                                <label for="direccion-socio"
-                                    class="block text-sm font-medium mb-1 text-gray-400">Dirección</label>
-                                <input type="text" id="direccion-socio"
-                                    class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
-                            </div>
                         </div>
 
-                        <!-- SECCIÓN 2: ASIGNACIÓN DE MEMBRESÍA -->
+                        <!-- SECCIÓN 2: ASIGNACIÓN DE MEMBRESÍA (OPCIONAL) -->
                         <h4 class="text-lg font-semibold mb-3 text-gray-300 flex items-center"><i
                                 data-lucide="credit-card" class="w-5 h-5 mr-2"
-                                style="color: var(--color-azul-acento);"></i> Asignar Membresía (RF09)</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                style="color: var(--color-azul-acento);"></i> Asignar Membresía (Opcional)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
                                 <label for="membresia" class="block text-sm font-medium mb-1 text-gray-400">Tipo de
-                                    Membresía <span class="text-red-500">*</span></label>
-                                <select id="membresia" required
+                                    Membresía</label>
+                                <select id="membresia"
                                     class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white appearance-none focus:ring-0">
-                                    <option value="">Selecciona una...</option>
-                                    <!-- Opciones de Membresía de Ejemplo (RF09) -->
-                                    <option value="premium">Anual Premium ($12,000 MXN)</option>
-                                    <option value="trimestral">Trimestral ($3,500 MXN)</option>
-                                    <option value="mensual">Mensual ($1,400 MXN)</option>
+                                    <option value="">Sin membresía</option>
+                                    <!-- Las opciones se cargarán dinámicamente -->
                                 </select>
                             </div>
                             <div>
                                 <label for="fecha-inicio" class="block text-sm font-medium mb-1 text-gray-400">Fecha de
-                                    Inicio <span class="text-red-500">*</span></label>
-                                <input type="date" id="fecha-inicio" required
+                                    Inicio</label>
+                                <input type="date" id="fecha-inicio"
                                     class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0">
                             </div>
+                        </div>
+                        <div class="mb-8">
+                            <label for="observaciones-membresia" class="block text-sm font-medium mb-1 text-gray-400">Observaciones</label>
+                            <textarea id="observaciones-membresia" rows="3" 
+                                class="input-neon w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-0"
+                                placeholder="Observaciones sobre la membresía (opcional)"></textarea>
                         </div>
 
                         <!-- Botones de Acción -->
@@ -366,7 +310,7 @@
                                 Cancelar
                             </button>
                             <button type="submit" class="btn-principal px-6 py-2 rounded-lg font-bold uppercase">
-                                REGISTRAR Y ASIGNAR
+                                GUARDAR SOCIO
                             </button>
                         </div>
                     </form>
