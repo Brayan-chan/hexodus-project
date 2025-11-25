@@ -49,6 +49,10 @@ app.get("/reportes", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "views", "reportes.html"))
 })
 
+app.get("/membresias", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "views", "membresias.html"))
+})
+
 app.get("/perfil", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "public", "views", "perfil.html"))
 })
