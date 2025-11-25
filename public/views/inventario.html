@@ -103,8 +103,8 @@
                             <select
                                 class="input-neon w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white">
                                 <option>Todos</option>
-                                <option>Normal</option>
-                                <option>Stock Bajo</option>
+                                <option>En Stock</option>
+                                <option>Agotado</option>
                             </select>
                         </div>
                         <button class="btn-secundario w-full py-2 font-medium rounded-lg uppercase">Aplicar
@@ -122,20 +122,26 @@
                                 <thead class="bg-gray-700">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
-                                            Clave</th>
+                                            Código</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
                                             Nombre</th>
-                                        <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
-                                            Stock</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
+                                            Descripción</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
+                                            Costo</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-300">
                                             Precio</th>
                                         <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
                                             Estado</th>
+                                        <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-300">
+                                            Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-800"></tbody>
                             </table>
                         </div>
+                        <!-- Paginación -->
+                        <div id="paginacion-container"></div>
                     </div>
                 </div>
             </div>
