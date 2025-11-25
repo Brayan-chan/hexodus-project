@@ -272,7 +272,7 @@ async function crearUsuario() {
         </div>
         <div>
           <label class="block text-sm font-medium text-left mb-2">Nombre Completo:</label>
-          <input id="swal-nombre" class="swal2-input" placeholder="Juan Pérez" style="margin: 0;">
+          <input id="swal-nombre" class="swal2-input" placeholder="nombre apellido" style="margin: 0;">
         </div>
         <div>
           <label class="block text-sm font-medium text-left mb-2">Teléfono (opcional):</label>
