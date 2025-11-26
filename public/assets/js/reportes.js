@@ -466,35 +466,157 @@ function exportarAPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Encabezado
+    // Colores del tema Hexodus
+    const primaryColor = [33, 150, 243]; // Azul
+    const secondaryColor = [96, 125, 139]; // Gris azulado
+    const accentColor = [255, 193, 7]; // Amarillo/Dorado
+    const darkGray = [55, 71, 79];
+    const lightGray = [245, 245, 245];
+    
+    // Encabezado con estilo
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 0, 210, 35, 'F');
+    
+    // Logo y título
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(24);
+    doc.setFont('helvetica', 'bold');
+    doc.text('HEXODUS', 15, 20);
+    
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Sistema de Gestión', 15, 28);
+    
+    // Título del reporte
+    doc.setTextColor(...darkGray);
     doc.setFontSize(20);
-    doc.text('HEXODUS - Reporte de ' + currentReportType.charAt(0).toUpperCase() + currentReportType.slice(1), 20, 20);
+    doc.setFont('helvetica', 'bold');
+    const reportTitle = 'Reporte de ' + currentReportType.charAt(0).toUpperCase() + currentReportType.slice(1);
+    doc.text(reportTitle, 15, 50);
     
-    doc.setFontSize(12);
-    doc.text('Fecha: ' + new Date().toLocaleDateString(), 20, 35);
+    // Línea separadora
+    doc.setDrawColor(...accentColor);
+    doc.setLineWidth(2);
+    doc.line(15, 55, 195, 55);
     
-    // Solo estadísticas para PDF
-    let yPosition = 50;
+    // Información del reporte
+    doc.setTextColor(...secondaryColor);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    const currentDate = new Date().toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    doc.text(`Fecha de generación: ${currentDate}`, 15, 65);
+    
+    let yPosition = 80;
+    
+    // Estadísticas mejoradas
     if (currentReportData.success && currentReportData.data && currentReportData.data.report && currentReportData.data.report.estadisticas) {
       const stats = currentReportData.data.report.estadisticas;
       
+      // Título de estadísticas
+      doc.setFillColor(...lightGray);
+      doc.rect(15, yPosition - 5, 180, 20, 'F');
+      doc.setTextColor(...darkGray);
       doc.setFontSize(14);
-      doc.text('Estadísticas:', 20, yPosition);
-      yPosition += 15;
+      doc.setFont('helvetica', 'bold');
+      doc.text('📊 Estadísticas Principales', 20, yPosition + 7);
+      yPosition += 25;
       
+      // Grid de estadísticas
+      doc.setTextColor(...darkGray);
       doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      
+      let col1X = 20, col2X = 110;
+      let isLeftColumn = true;
+      
       Object.entries(stats).forEach(([key, value]) => {
         if (typeof value !== 'object' && value !== null) {
-          doc.text(`${key}: ${value}`, 20, yPosition);
-          yPosition += 10;
+          const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          const formattedValue = typeof value === 'number' && value > 1000 ? 
+            value.toLocaleString() : value;
+          
+          const xPos = isLeftColumn ? col1X : col2X;
+          
+          // Clave en negrita
+          doc.setFont('helvetica', 'bold');
+          doc.text(`${formattedKey}:`, xPos, yPosition);
+          
+          // Valor normal
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(...primaryColor);
+          doc.text(`${formattedValue}`, xPos + 60, yPosition);
+          
+          if (isLeftColumn) {
+            isLeftColumn = false;
+          } else {
+            isLeftColumn = true;
+            yPosition += 12;
+          }
+          
+          doc.setTextColor(...darkGray);
         }
       });
+      
+      if (!isLeftColumn) yPosition += 12;
+      yPosition += 10;
     }
     
-    const fileName = `reporte_${currentReportType}_${new Date().toISOString().split('T')[0]}.pdf`;
+    // Datos de tabla (solo para algunos tipos)
+    const data = currentReportData.data.report;
+    if (data.datos && data.datos.length > 0 && yPosition < 250) {
+      // Título de datos
+      doc.setFillColor(...primaryColor);
+      doc.rect(15, yPosition - 5, 180, 15, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('📋 Datos Detallados', 20, yPosition + 5);
+      yPosition += 20;
+      
+      // Mostrar solo algunos registros principales
+      const limitedData = data.datos.slice(0, 8);
+      doc.setTextColor(...darkGray);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      
+      if (currentReportType === 'inventario') {
+        limitedData.forEach((producto, index) => {
+          const bgColor = index % 2 === 0 ? lightGray : [255, 255, 255];
+          doc.setFillColor(...bgColor);
+          doc.rect(15, yPosition - 3, 180, 12, 'F');
+          
+          doc.text(producto.nombre_producto || 'Sin nombre', 20, yPosition + 3);
+          doc.text(`Stock: ${producto.cantidad_stock || 0}`, 100, yPosition + 3);
+          doc.text(`$${producto.precio || 0}`, 140, yPosition + 3);
+          doc.text(producto.status_producto || 'N/A', 165, yPosition + 3);
+          yPosition += 12;
+        });
+      }
+      
+      if (data.datos.length > 8) {
+        doc.setTextColor(...secondaryColor);
+        doc.setFont('helvetica', 'italic');
+        doc.text(`... y ${data.datos.length - 8} registros más (consulte el archivo Excel para datos completos)`, 20, yPosition + 5);
+      }
+    }
+    
+    // Pie de página
+    doc.setFontSize(8);
+    doc.setTextColor(...secondaryColor);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Generado por Sistema Hexodus - hexodus.com', 15, 285);
+    doc.text(`Página 1 de 1 | ${new Date().toLocaleDateString()}`, 15, 290);
+    
+    const fileName = `HEXODUS_${currentReportType.toUpperCase()}_${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(fileName);
     
-    AlertConfig.showSuccess('Éxito', 'Reporte PDF descargado correctamente');
+    AlertConfig.showSuccess('Éxito', 'Reporte PDF descargado correctamente con formato profesional');
   } catch (error) {
     console.error('Error al exportar PDF:', error);
     AlertConfig.showError('Error', 'No se pudo exportar a PDF');
@@ -509,48 +631,179 @@ function exportarAExcel() {
 
   try {
     const data = currentReportData.data.report;
-    let worksheetData = [];
+    const wb = XLSX.utils.book_new();
     
-    // Preparar datos según el tipo
-    if (currentReportType === 'inventario' && data.datos) {
-      worksheetData = [
-        ['Producto', 'Stock', 'Precio', 'Valor Total', 'Estado'],
-        ...data.datos.map(p => {
-          const stock = p.cantidad_stock || p.stock || 0;
-          const precio = p.precio || 0;
-          return [
-            p.nombre || 'Sin nombre',
-            stock,
-            precio,
-            (stock * precio).toFixed(2),
-            stock > 10 ? 'Disponible' : stock > 0 ? 'Bajo Stock' : 'Agotado'
-          ];
-        })
-      ];
-    } else if (currentReportType === 'ventas' && data.datos) {
-      worksheetData = [
-        ['ID', 'Vendedor', 'Total', 'Fecha', 'Productos'],
-        ...data.datos.map(v => [
-          v.id,
-          v.vendedor_nombre || 'N/A',
-          v.total || v.monto_total || 0,
-          v.fecha_creacion ? new Date(v.fecha_creacion).toLocaleDateString() : 'N/A',
-          v.cantidad || 1
-        ])
-      ];
-    } else {
-      // Datos genéricos
-      worksheetData = [['Tipo de Reporte', 'Fecha'], [currentReportType, new Date().toLocaleDateString()]];
+    // Crear hojas separadas
+    const statsData = [];
+    const detailsData = [];
+    
+    // === HOJA DE ESTADÍSTICAS ===
+    statsData.push(['HEXODUS - SISTEMA DE GESTIÓN']);
+    statsData.push(['']);
+    statsData.push([`Reporte de ${currentReportType.charAt(0).toUpperCase() + currentReportType.slice(1)}`]);
+    statsData.push([`Fecha: ${new Date().toLocaleDateString('es-ES', { 
+      year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+    })}`]);
+    statsData.push(['']);
+    statsData.push(['ESTADÍSTICAS PRINCIPALES']);
+    statsData.push(['']);
+    
+    if (data.estadisticas) {
+      statsData.push(['Métrica', 'Valor']);
+      Object.entries(data.estadisticas).forEach(([key, value]) => {
+        if (typeof value !== 'object' && value !== null) {
+          const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          const formattedValue = typeof value === 'number' && value > 1000 ? 
+            value.toLocaleString() : value;
+          statsData.push([formattedKey, formattedValue]);
+        }
+      });
     }
     
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(worksheetData);
-    XLSX.utils.book_append_sheet(wb, ws, 'Reporte');
+    // === HOJA DE DATOS DETALLADOS ===
+    if (currentReportType === 'inventario' && data.datos) {
+      detailsData.push(['INVENTARIO DETALLADO']);
+      detailsData.push(['']);
+      detailsData.push(['Producto', 'Código', 'Stock', 'Precio', 'Valor Total', 'Estado', 'Stock Mínimo', 'Descripción']);
+      
+      data.datos.forEach(p => {
+        const stock = p.cantidad_stock || 0;
+        const precio = p.precio || 0;
+        detailsData.push([
+          p.nombre_producto || 'Sin nombre',
+          p.codigo_producto || 'N/A',
+          stock,
+          precio,
+          (stock * precio).toFixed(2),
+          p.status_producto || 'N/A',
+          p.stock_minimo || 0,
+          p.descripcion || 'Sin descripción'
+        ]);
+      });
+    } else if (currentReportType === 'ventas' && data.datos) {
+      detailsData.push(['VENTAS DETALLADAS']);
+      detailsData.push(['']);
+      detailsData.push(['ID', 'Usuario', 'Total', 'Fecha', 'Estado', 'Productos', 'Observaciones']);
+      
+      data.datos.forEach(v => {
+        detailsData.push([
+          v.id,
+          v.id_usuario || 'N/A',
+          `$${v.total || 0}`,
+          v.fecha_creacion ? new Date(v.fecha_creacion).toLocaleDateString() : 'N/A',
+          v.status_venta || 'N/A',
+          v.productos ? v.productos.length : 0,
+          v.observaciones || 'Sin observaciones'
+        ]);
+      });
+    } else if (currentReportType === 'membresias' && data.datos) {
+      detailsData.push(['MEMBRESÍAS DETALLADAS']);
+      detailsData.push(['']);
+      detailsData.push(['Socio', 'Membresía', 'Estado', 'Inicio', 'Fin', 'Precio', 'Email', 'Teléfono']);
+      
+      data.datos.forEach(m => {
+        detailsData.push([
+          m.socio_info?.nombre_socio || 'N/A',
+          m.membresia_info?.nombre_membresia || 'N/A',
+          m.status_membresia_socio || 'N/A',
+          m.fecha_inicio ? new Date(m.fecha_inicio).toLocaleDateString() : 'N/A',
+          m.fecha_fin ? new Date(m.fecha_fin).toLocaleDateString() : 'N/A',
+          `$${m.membresia_info?.precio || 0}`,
+          m.socio_info?.correo_electronico || 'N/A',
+          m.socio_info?.telefono || 'N/A'
+        ]);
+      });
+    } else if (currentReportType === 'socios' && data.datos) {
+      detailsData.push(['SOCIOS DETALLADOS']);
+      detailsData.push(['']);
+      detailsData.push(['Nombre', 'Email', 'Teléfono', 'Estado', 'Registro', 'Membresías', 'Estado Membresía']);
+      
+      data.datos.forEach(s => {
+        detailsData.push([
+          s.nombre_socio || 'N/A',
+          s.correo_electronico || 'N/A',
+          s.telefono || 'N/A',
+          s.status || 'N/A',
+          s.fecha_creacion ? new Date(
+            s.fecha_creacion.seconds ? s.fecha_creacion.seconds * 1000 : s.fecha_creacion
+          ).toLocaleDateString() : 'N/A',
+          s.total_membresias || 0,
+          s.membresia_activa ? 
+            (s.membresia_activa.status_membresia_socio === 'pagado' ? 'Membresía Pagada' : 'Membresía Pendiente') : 
+            'Sin membresía'
+        ]);
+      });
+    } else if (currentReportType === 'usuarios' && data.datos) {
+      detailsData.push(['USUARIOS DETALLADOS']);
+      detailsData.push(['']);
+      detailsData.push(['Nombre', 'Email', 'Rol', 'Estado', 'Registro', 'Último Acceso']);
+      
+      data.datos.forEach(u => {
+        detailsData.push([
+          u.nombre || 'N/A',
+          u.email || 'N/A',
+          u.rol || 'N/A',
+          u.status || 'N/A',
+          u.fecha_creacion ? new Date(u.fecha_creacion).toLocaleDateString() : 'N/A',
+          u.ultimo_acceso ? new Date(u.ultimo_acceso).toLocaleDateString() : 'Nunca'
+        ]);
+      });
+    } else if (currentReportType === 'historial') {
+      const reportesData = currentReportData.data.reportes || [];
+      detailsData.push(['HISTORIAL DE REPORTES']);
+      detailsData.push(['']);
+      detailsData.push(['ID', 'Tipo', 'Fecha', 'Usuario', 'Registros', 'Estado']);
+      
+      reportesData.forEach(r => {
+        detailsData.push([
+          r.id,
+          r.tipo_reporte || 'N/A',
+          r.fecha_generacion ? new Date(r.fecha_generacion).toLocaleDateString() : 'N/A',
+          r.user_id || 'Sistema',
+          r.total_registros || 0,
+          r.status || 'N/A'
+        ]);
+      });
+    }
     
-    const fileName = `reporte_${currentReportType}_${new Date().toISOString().split('T')[0]}.xlsx`;
+    // Crear hoja de estadísticas
+    const statsWs = XLSX.utils.aoa_to_sheet(statsData);
+    
+    // Aplicar estilos a la hoja de estadísticas
+    statsWs['!cols'] = [{ width: 30 }, { width: 20 }];
+    
+    // Crear hoja de datos detallados
+    if (detailsData.length > 0) {
+      const detailsWs = XLSX.utils.aoa_to_sheet(detailsData);
+      
+      // Auto-ajustar ancho de columnas
+      const maxWidths = [];
+      detailsData.forEach(row => {
+        row.forEach((cell, colIndex) => {
+          const cellLength = cell ? cell.toString().length : 0;
+          maxWidths[colIndex] = Math.max(maxWidths[colIndex] || 0, cellLength + 2);
+        });
+      });
+      
+      detailsWs['!cols'] = maxWidths.map(width => ({ width: Math.min(width, 50) }));
+      
+      XLSX.utils.book_append_sheet(wb, detailsWs, 'Datos Detallados');
+    }
+    
+    XLSX.utils.book_append_sheet(wb, statsWs, 'Resumen Ejecutivo');
+    
+    // Agregar metadata del libro
+    wb.Props = {
+      Title: `Reporte ${currentReportType}`,
+      Subject: 'Reporte generado por Sistema Hexodus',
+      Author: 'Sistema Hexodus',
+      CreatedDate: new Date()
+    };
+    
+    const fileName = `HEXODUS_${currentReportType.toUpperCase()}_${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(wb, fileName);
     
-    AlertConfig.showSuccess('Éxito', 'Reporte Excel descargado correctamente');
+    AlertConfig.showSuccess('Éxito', 'Reporte Excel descargado con formato profesional y múltiples hojas');
   } catch (error) {
     console.error('Error al exportar Excel:', error);
     AlertConfig.showError('Error', 'No se pudo exportar a Excel');
