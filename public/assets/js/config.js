@@ -18,7 +18,16 @@ export const API_ENDPOINTS = {
   roles: `${API_BASE_URL}/api/roles`,
   memberships: `${API_BASE_URL}/api/memberships`,
   movements: `${API_BASE_URL}/api/movements`,
-  reports: `${API_BASE_URL}/api/reports`
+  reports: `${API_BASE_URL}/api/reports`,
+  
+  // Endpoints específicos de reportes
+  reportsInventory: `${API_BASE_URL}/api/reports/inventory`,
+  reportsSales: `${API_BASE_URL}/api/reports/sales`,
+  reportsMemberships: `${API_BASE_URL}/api/reports/memberships`,
+  reportsUsers: `${API_BASE_URL}/api/reports/users`,
+  reportsSocios: `${API_BASE_URL}/api/reports/socios`,
+  reportsHistory: `${API_BASE_URL}/api/reports/history`,
+  reportsById: (id) => `${API_BASE_URL}/api/reports/${id}`
 }
 
 const AuthStorage = {
