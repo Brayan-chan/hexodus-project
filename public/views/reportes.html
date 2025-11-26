@@ -11,6 +11,10 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Agregando SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SheetJS para exportar Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <!-- jsPDF para exportar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body onload="lucide.createIcons()">
@@ -79,55 +83,168 @@
             style="background-color: var(--color-tarjeta-fondo);">
             <i data-lucide="menu" class="w-6 h-6" style="color: var(--color-azul-acento);"></i>
         </button>
+        
         <main class="flex-1 md:ml-64 p-4 md:p-8">
             <header
                 class="encabezado-dashboard flex items-center justify-between p-4 rounded-xl sticky top-0 z-10 mb-8">
                 <h1 class="text-2xl font-bold" style="color: var(--color-azul-acento);">Reportes</h1>
                 <div class="flex items-center space-x-4">
-                    <span class="text-sm hidden sm:block" id="fecha-hora-header">Exportar en Excel</span>
+                    <span class="text-sm hidden sm:block" id="fecha-hora-header">Cargando...</span>
                     <i data-lucide="bell" class="w-6 h-6 text-gray-400 hover:text-white cursor-pointer"></i>
                     <i id="logoutBtn" data-lucide="log-out"
                         class="w-6 h-6 text-gray-400 hover:text-white cursor-pointer"></i>
                 </div>
             </header>
-            <!-- Cambiar divs a botones funcionales -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <button id="reporte-inventario"
-                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
-                    <i data-lucide="package" class="w-12 h-12 mb-3" style="color: var(--color-azul-acento);"></i>
-                    <h3 class="font-semibold text-center">Reporte de Inventario</h3>
-                    <p class="text-xs text-gray-400 mt-1">Ver stock disponible</p>
-                </button>
-                <button id="reporte-socios"
-                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
-                    <i data-lucide="users" class="w-12 h-12 mb-3" style="color: var(--color-rojo-principal);"></i>
-                    <h3 class="font-semibold text-center">Reporte de Socios</h3>
-                    <p class="text-xs text-gray-400 mt-1">Datos de membresías activas</p>
-                </button>
-                <button id="reporte-ventas"
-                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
-                    <i data-lucide="shopping-cart" class="w-12 h-12 mb-3" style="color: var(--color-azul-acento);"></i>
-                    <h3 class="font-semibold text-center">Reporte de Ventas</h3>
-                    <p class="text-xs text-gray-400 mt-1">Ingresos y transacciones</p>
-                </button>
-                <button id="reporte-pagos"
-                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
-                    <i data-lucide="credit-card" class="w-12 h-12 mb-3" style="color: var(--color-rojo-principal);"></i>
-                    <h3 class="font-semibold text-center">Reporte de Pagos</h3>
-                    <p class="text-xs text-gray-400 mt-1">Pagos de membresías</p>
-                </button>
-                <button id="reporte-visitantes"
-                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
-                    <i data-lucide="trending-up" class="w-12 h-12 mb-3" style="color: var(--color-azul-acento);"></i>
-                    <h3 class="font-semibold text-center">Reporte de Visitantes</h3>
-                    <p class="text-xs text-gray-400 mt-1">Registro de entrada/salida</p>
-                </button>
-                <button id="reporte-general"
-                    class="tarjeta p-6 flex flex-col items-center justify-center h-32 hover:shadow-lg transition hover:scale-105">
-                    <i data-lucide="bar-chart-3" class="w-12 h-12 mb-3" style="color: var(--color-rojo-principal);"></i>
-                    <h3 class="font-semibold text-center">Reporte General</h3>
-                    <p class="text-xs text-gray-400 mt-1">Resumen de operaciones</p>
-                </button>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Panel izquierdo - Generación de reportes -->
+                <div class="lg:col-span-1">
+                    <div class="tarjeta p-6">
+                        <h2 class="text-xl font-semibold mb-4" style="color: var(--color-azul-acento);">
+                            <i data-lucide="file-plus" class="w-5 h-5 inline mr-2"></i>
+                            Generar Reporte
+                        </h2>
+                        <p class="text-gray-400 mb-6 text-sm">Selecciona el tipo de reporte que deseas generar</p>
+                        
+                        <div class="space-y-3">
+                            <button id="reporte-inventario"
+                                class="w-full p-4 text-left bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg transition duration-200 group">
+                                <div class="flex items-center">
+                                    <i data-lucide="package" class="w-5 h-5 mr-3" style="color: var(--color-azul-acento);"></i>
+                                    <div>
+                                        <div class="font-medium text-white">Inventario</div>
+                                        <div class="text-xs text-gray-400">Stock y valorización</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button id="reporte-ventas"
+                                class="w-full p-4 text-left bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg transition duration-200 group">
+                                <div class="flex items-center">
+                                    <i data-lucide="shopping-cart" class="w-5 h-5 mr-3" style="color: var(--color-azul-acento);"></i>
+                                    <div>
+                                        <div class="font-medium text-white">Ventas</div>
+                                        <div class="text-xs text-gray-400">Ingresos y transacciones</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button id="reporte-membresias"
+                                class="w-full p-4 text-left bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg transition duration-200 group">
+                                <div class="flex items-center">
+                                    <i data-lucide="credit-card" class="w-5 h-5 mr-3" style="color: var(--color-rojo-principal);"></i>
+                                    <div>
+                                        <div class="font-medium text-white">Membresías</div>
+                                        <div class="text-xs text-gray-400">Pagos y suscripciones</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button id="reporte-socios"
+                                class="w-full p-4 text-left bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg transition duration-200 group">
+                                <div class="flex items-center">
+                                    <i data-lucide="users" class="w-5 h-5 mr-3" style="color: var(--color-rojo-principal);"></i>
+                                    <div>
+                                        <div class="font-medium text-white">Socios</div>
+                                        <div class="text-xs text-gray-400">Gestión de miembros</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button id="reporte-usuarios"
+                                class="w-full p-4 text-left bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg transition duration-200 group">
+                                <div class="flex items-center">
+                                    <i data-lucide="user-check" class="w-5 h-5 mr-3" style="color: var(--color-azul-acento);"></i>
+                                    <div>
+                                        <div class="font-medium text-white">Usuarios</div>
+                                        <div class="text-xs text-gray-400">Sistema y accesos</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button id="reporte-historial"
+                                class="w-full p-4 text-left bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg transition duration-200 group">
+                                <div class="flex items-center">
+                                    <i data-lucide="history" class="w-5 h-5 mr-3" style="color: var(--color-azul-acento);"></i>
+                                    <div>
+                                        <div class="font-medium text-white">Historial</div>
+                                        <div class="text-xs text-gray-400">Reportes anteriores</div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <div class="mt-6 p-4 bg-blue-900 bg-opacity-30 rounded-lg border border-blue-800">
+                            <div class="flex items-center text-blue-300">
+                                <i data-lucide="info" class="w-4 h-4 mr-2"></i>
+                                <span class="text-sm font-medium">Información</span>
+                            </div>
+                            <p class="text-blue-200 text-xs mt-1">
+                                Los reportes se pueden exportar en formato PDF para vista rápida o Excel para análisis detallado.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Panel derecho - Visualización de reportes -->
+                <div class="lg:col-span-3">
+                    <div class="tarjeta p-6 min-h-[600px]">
+                        <div id="reporte-placeholder" class="flex flex-col items-center justify-center h-full text-center">
+                            <i data-lucide="file-text" class="w-24 h-24 text-gray-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold text-gray-300 mb-2">Selecciona un reporte</h3>
+                            <p class="text-gray-500">Haz clic en cualquier tipo de reporte del menú lateral para generar y visualizar los datos.</p>
+                        </div>
+                        
+                        <!-- Contenido del reporte (se llenará dinámicamente) -->
+                        <div id="reporte-content" class="hidden">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 id="reporte-title" class="text-xl font-semibold flex items-center">
+                                    <i data-lucide="file-text" class="w-6 h-6 mr-2" style="color: var(--color-azul-acento);"></i>
+                                    Título del Reporte
+                                </h2>
+                                <div class="flex space-x-2">
+                                    <button id="exportPDF" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition duration-200">
+                                        <i data-lucide="file-text" class="w-4 h-4 inline mr-2"></i>
+                                        PDF
+                                    </button>
+                                    <button id="exportExcel" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm transition duration-200">
+                                        <i data-lucide="file-spreadsheet" class="w-4 h-4 inline mr-2"></i>
+                                        Excel
+                                    </button>
+                                    <button id="refreshReporte" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition duration-200">
+                                        <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-2"></i>
+                                        Actualizar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Estadísticas del reporte -->
+                            <div id="reporte-stats" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                                <!-- Se llenarán dinámicamente -->
+                            </div>
+                            
+                            <!-- Tabla de datos -->
+                            <div class="tabla-contenedor overflow-x-auto tabla-scroll">
+                                <table id="reporte-table" class="min-w-full divide-y divide-gray-700">
+                                    <thead class="tabla-header" id="reporte-table-head">
+                                        <!-- Se llenará dinámicamente -->
+                                    </thead>
+                                    <tbody class="tabla-body divide-y divide-gray-700" id="reporte-table-body">
+                                        <!-- Se llenará dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Información adicional -->
+                            <div id="reporte-info" class="mt-6 p-4 bg-gray-700 rounded-lg">
+                                <div class="flex items-center text-gray-300">
+                                    <i data-lucide="clock" class="w-4 h-4 mr-2"></i>
+                                    <span class="text-sm">Reporte generado el: <span id="reporte-fecha">--</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
