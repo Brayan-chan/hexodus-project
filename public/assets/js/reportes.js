@@ -466,41 +466,42 @@ function exportarAPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Colores del tema Hexodus
-    const primaryColor = [33, 150, 243]; // Azul
-    const secondaryColor = [96, 125, 139]; // Gris azulado
-    const accentColor = [255, 193, 7]; // Amarillo/Dorado
-    const darkGray = [55, 71, 79];
-    const lightGray = [245, 245, 245];
+    // Colores neon del tema Hexodus
+    const neonRed = [255, 51, 51]; // #FF3333 - Rojo neon
+    const neonBlue = [51, 183, 255]; // #33B7FF - Azul neon  
+    const darkBg = [23, 23, 23]; // #171717 - Fondo oscuro
+    const grayText = [156, 163, 175]; // #9CA3AF - Texto gris
+    const white = [255, 255, 255]; // #FFFFFF - Blanco
+    const lightGray = [31, 41, 55]; // #1F2937 - Gris claro oscuro
     
-    // Encabezado con estilo
-    doc.setFillColor(...primaryColor);
+    // Encabezado con gradiente neon
+    doc.setFillColor(...neonBlue);
     doc.rect(0, 0, 210, 35, 'F');
     
-    // Logo y título
-    doc.setTextColor(255, 255, 255);
+    // Logo y título con fuente estándar
+    doc.setTextColor(...white);
     doc.setFontSize(24);
     doc.setFont('helvetica', 'bold');
     doc.text('HEXODUS', 15, 20);
     
     doc.setFontSize(16);
     doc.setFont('helvetica', 'normal');
-    doc.text('Sistema de Gestión', 15, 28);
+    doc.text('Sistema de Gestion', 15, 28);
     
     // Título del reporte
-    doc.setTextColor(...darkGray);
+    doc.setTextColor(...darkBg);
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
     const reportTitle = 'Reporte de ' + currentReportType.charAt(0).toUpperCase() + currentReportType.slice(1);
     doc.text(reportTitle, 15, 50);
     
-    // Línea separadora
-    doc.setDrawColor(...accentColor);
-    doc.setLineWidth(2);
+    // Línea separadora neon
+    doc.setDrawColor(...neonRed);
+    doc.setLineWidth(3);
     doc.line(15, 55, 195, 55);
     
     // Información del reporte
-    doc.setTextColor(...secondaryColor);
+    doc.setTextColor(...grayText);
     doc.setFontSize(11);
     doc.setFont('helvetica', 'normal');
     const currentDate = new Date().toLocaleDateString('es-ES', {
@@ -510,25 +511,25 @@ function exportarAPDF() {
       hour: '2-digit',
       minute: '2-digit'
     });
-    doc.text(`Fecha de generación: ${currentDate}`, 15, 65);
+    doc.text('Fecha de generacion: ' + currentDate, 15, 65);
     
     let yPosition = 80;
     
-    // Estadísticas mejoradas
+    // Estadísticas mejoradas con colores neon
     if (currentReportData.success && currentReportData.data && currentReportData.data.report && currentReportData.data.report.estadisticas) {
       const stats = currentReportData.data.report.estadisticas;
       
-      // Título de estadísticas
-      doc.setFillColor(...lightGray);
-      doc.rect(15, yPosition - 5, 180, 20, 'F');
-      doc.setTextColor(...darkGray);
+      // Título de estadísticas con fondo neon
+      doc.setFillColor(...neonRed);
+      doc.rect(15, yPosition - 8, 180, 20, 'F');
+      doc.setTextColor(...white);
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
-      doc.text('📊 Estadísticas Principales', 20, yPosition + 7);
+      doc.text('Estadisticas Principales', 20, yPosition + 5);
       yPosition += 25;
       
       // Grid de estadísticas
-      doc.setTextColor(...darkGray);
+      doc.setTextColor(...darkBg);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       
@@ -543,14 +544,21 @@ function exportarAPDF() {
           
           const xPos = isLeftColumn ? col1X : col2X;
           
+          // Fondo alternado
+          if (yPosition % 24 === 0) {
+            doc.setFillColor(248, 248, 248);
+            doc.rect(15, yPosition - 5, 180, 12, 'F');
+          }
+          
           // Clave en negrita
           doc.setFont('helvetica', 'bold');
-          doc.text(`${formattedKey}:`, xPos, yPosition);
+          doc.setTextColor(...darkBg);
+          doc.text(formattedKey + ':', xPos, yPosition);
           
-          // Valor normal
+          // Valor con color neon
           doc.setFont('helvetica', 'normal');
-          doc.setTextColor(...primaryColor);
-          doc.text(`${formattedValue}`, xPos + 60, yPosition);
+          doc.setTextColor(...neonBlue);
+          doc.text(String(formattedValue), xPos + 50, yPosition);
           
           if (isLeftColumn) {
             isLeftColumn = false;
@@ -558,8 +566,6 @@ function exportarAPDF() {
             isLeftColumn = true;
             yPosition += 12;
           }
-          
-          doc.setTextColor(...darkGray);
         }
       });
       
@@ -567,56 +573,72 @@ function exportarAPDF() {
       yPosition += 10;
     }
     
-    // Datos de tabla (solo para algunos tipos)
+    // Datos de tabla con estilo neon
     const data = currentReportData.data.report;
     if (data.datos && data.datos.length > 0 && yPosition < 250) {
-      // Título de datos
-      doc.setFillColor(...primaryColor);
+      // Título de datos con gradiente
+      doc.setFillColor(...neonBlue);
       doc.rect(15, yPosition - 5, 180, 15, 'F');
-      doc.setTextColor(255, 255, 255);
+      doc.setTextColor(...white);
       doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
-      doc.text('📋 Datos Detallados', 20, yPosition + 5);
+      doc.text('Datos Detallados', 20, yPosition + 5);
       yPosition += 20;
       
       // Mostrar solo algunos registros principales
       const limitedData = data.datos.slice(0, 8);
-      doc.setTextColor(...darkGray);
+      doc.setTextColor(...darkBg);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
       
       if (currentReportType === 'inventario') {
         limitedData.forEach((producto, index) => {
-          const bgColor = index % 2 === 0 ? lightGray : [255, 255, 255];
-          doc.setFillColor(...bgColor);
-          doc.rect(15, yPosition - 3, 180, 12, 'F');
+          // Fondo alternado
+          if (index % 2 === 0) {
+            doc.setFillColor(250, 250, 250);
+            doc.rect(15, yPosition - 3, 180, 12, 'F');
+          }
           
+          doc.setTextColor(...darkBg);
           doc.text(producto.nombre_producto || 'Sin nombre', 20, yPosition + 3);
-          doc.text(`Stock: ${producto.cantidad_stock || 0}`, 100, yPosition + 3);
-          doc.text(`$${producto.precio || 0}`, 140, yPosition + 3);
-          doc.text(producto.status_producto || 'N/A', 165, yPosition + 3);
+          doc.text('Stock: ' + (producto.cantidad_stock || 0), 100, yPosition + 3);
+          doc.text('$' + (producto.precio || 0), 140, yPosition + 3);
+          
+          // Estado con color según status
+          const status = producto.status_producto || 'N/A';
+          if (status === 'agotado') {
+            doc.setTextColor(...neonRed);
+          } else if (status === 'stock bajo') {
+            doc.setTextColor(255, 165, 0); // Naranja
+          } else {
+            doc.setTextColor(34, 197, 94); // Verde
+          }
+          doc.text(status, 165, yPosition + 3);
           yPosition += 12;
         });
       }
       
       if (data.datos.length > 8) {
-        doc.setTextColor(...secondaryColor);
+        doc.setTextColor(...grayText);
         doc.setFont('helvetica', 'italic');
-        doc.text(`... y ${data.datos.length - 8} registros más (consulte el archivo Excel para datos completos)`, 20, yPosition + 5);
+        doc.text('... y ' + (data.datos.length - 8) + ' registros mas (consulte el archivo Excel para datos completos)', 20, yPosition + 5);
       }
     }
     
-    // Pie de página
+    // Pie de página con estilo neon
+    doc.setFillColor(...darkBg);
+    doc.rect(0, 275, 210, 22, 'F');
     doc.setFontSize(8);
-    doc.setTextColor(...secondaryColor);
+    doc.setTextColor(...neonBlue);
     doc.setFont('helvetica', 'normal');
     doc.text('Generado por Sistema Hexodus - hexodus.com', 15, 285);
-    doc.text(`Página 1 de 1 | ${new Date().toLocaleDateString()}`, 15, 290);
+    doc.setTextColor(...grayText);
+    doc.text('Pagina 1 de 1 | ' + new Date().toLocaleDateString(), 15, 290);
     
     const fileName = `HEXODUS_${currentReportType.toUpperCase()}_${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(fileName);
     
-    AlertConfig.showSuccess('Éxito', 'Reporte PDF descargado correctamente con formato profesional');
+    AlertConfig.showSuccess('Exito', 'Reporte PDF descargado correctamente con estilo neon');
   } catch (error) {
     console.error('Error al exportar PDF:', error);
     AlertConfig.showError('Error', 'No se pudo exportar a PDF');
@@ -637,19 +659,19 @@ function exportarAExcel() {
     const statsData = [];
     const detailsData = [];
     
-    // === HOJA DE ESTADÍSTICAS ===
-    statsData.push(['HEXODUS - SISTEMA DE GESTIÓN']);
+    // === HOJA DE ESTADISTICAS ===
+    statsData.push(['HEXODUS - SISTEMA DE GESTION']);
     statsData.push(['']);
     statsData.push([`Reporte de ${currentReportType.charAt(0).toUpperCase() + currentReportType.slice(1)}`]);
     statsData.push([`Fecha: ${new Date().toLocaleDateString('es-ES', { 
       year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
     })}`]);
     statsData.push(['']);
-    statsData.push(['ESTADÍSTICAS PRINCIPALES']);
+    statsData.push(['ESTADISTICAS PRINCIPALES']);
     statsData.push(['']);
     
     if (data.estadisticas) {
-      statsData.push(['Métrica', 'Valor']);
+      statsData.push(['Metrica', 'Valor']);
       Object.entries(data.estadisticas).forEach(([key, value]) => {
         if (typeof value !== 'object' && value !== null) {
           const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -664,7 +686,7 @@ function exportarAExcel() {
     if (currentReportType === 'inventario' && data.datos) {
       detailsData.push(['INVENTARIO DETALLADO']);
       detailsData.push(['']);
-      detailsData.push(['Producto', 'Código', 'Stock', 'Precio', 'Valor Total', 'Estado', 'Stock Mínimo', 'Descripción']);
+      detailsData.push(['Producto', 'Codigo', 'Stock', 'Precio', 'Valor Total', 'Estado', 'Stock Minimo', 'Descripcion']);
       
       data.datos.forEach(p => {
         const stock = p.cantidad_stock || 0;
@@ -677,7 +699,7 @@ function exportarAExcel() {
           (stock * precio).toFixed(2),
           p.status_producto || 'N/A',
           p.stock_minimo || 0,
-          p.descripcion || 'Sin descripción'
+          p.descripcion || 'Sin descripcion'
         ]);
       });
     } else if (currentReportType === 'ventas' && data.datos) {
@@ -697,9 +719,9 @@ function exportarAExcel() {
         ]);
       });
     } else if (currentReportType === 'membresias' && data.datos) {
-      detailsData.push(['MEMBRESÍAS DETALLADAS']);
+      detailsData.push(['MEMBRESIAS DETALLADAS']);
       detailsData.push(['']);
-      detailsData.push(['Socio', 'Membresía', 'Estado', 'Inicio', 'Fin', 'Precio', 'Email', 'Teléfono']);
+      detailsData.push(['Socio', 'Membresia', 'Estado', 'Inicio', 'Fin', 'Precio', 'Email', 'Telefono']);
       
       data.datos.forEach(m => {
         detailsData.push([
@@ -716,7 +738,7 @@ function exportarAExcel() {
     } else if (currentReportType === 'socios' && data.datos) {
       detailsData.push(['SOCIOS DETALLADOS']);
       detailsData.push(['']);
-      detailsData.push(['Nombre', 'Email', 'Teléfono', 'Estado', 'Registro', 'Membresías', 'Estado Membresía']);
+      detailsData.push(['Nombre', 'Email', 'Telefono', 'Estado', 'Registro', 'Membresias', 'Estado Membresia']);
       
       data.datos.forEach(s => {
         detailsData.push([
@@ -729,14 +751,14 @@ function exportarAExcel() {
           ).toLocaleDateString() : 'N/A',
           s.total_membresias || 0,
           s.membresia_activa ? 
-            (s.membresia_activa.status_membresia_socio === 'pagado' ? 'Membresía Pagada' : 'Membresía Pendiente') : 
-            'Sin membresía'
+            (s.membresia_activa.status_membresia_socio === 'pagado' ? 'Membresia Pagada' : 'Membresia Pendiente') : 
+            'Sin membresia'
         ]);
       });
     } else if (currentReportType === 'usuarios' && data.datos) {
       detailsData.push(['USUARIOS DETALLADOS']);
       detailsData.push(['']);
-      detailsData.push(['Nombre', 'Email', 'Rol', 'Estado', 'Registro', 'Último Acceso']);
+      detailsData.push(['Nombre', 'Email', 'Rol', 'Estado', 'Registro', 'Ultimo Acceso']);
       
       data.datos.forEach(u => {
         detailsData.push([
@@ -766,11 +788,11 @@ function exportarAExcel() {
       });
     }
     
-    // Crear hoja de estadísticas
+    // Crear hoja de estadisticas
     const statsWs = XLSX.utils.aoa_to_sheet(statsData);
     
-    // Aplicar estilos a la hoja de estadísticas
-    statsWs['!cols'] = [{ width: 30 }, { width: 20 }];
+    // Aplicar estilos a la hoja de estadisticas
+    statsWs['!cols'] = [{ width: 35 }, { width: 25 }];
     
     // Crear hoja de datos detallados
     if (detailsData.length > 0) {
@@ -803,7 +825,7 @@ function exportarAExcel() {
     const fileName = `HEXODUS_${currentReportType.toUpperCase()}_${new Date().toISOString().split('T')[0]}.xlsx`;
     XLSX.writeFile(wb, fileName);
     
-    AlertConfig.showSuccess('Éxito', 'Reporte Excel descargado con formato profesional y múltiples hojas');
+    AlertConfig.showSuccess('Exito', 'Reporte Excel descargado con formato profesional y multiples hojas');
   } catch (error) {
     console.error('Error al exportar Excel:', error);
     AlertConfig.showError('Error', 'No se pudo exportar a Excel');
