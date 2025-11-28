@@ -23,7 +23,7 @@
 
         <!-- 1. BARRA LATERAL DE NAVEGACIÓN (IDÉNTICA AL DASHBOARD) -->
         <aside
-            class="sidebar fixed z-30 inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out p-4 flex flex-col justify-between">
+            class="sidebar fixed z-30 inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out p-4 flex flex-col justify-between overflow-y-auto">
             <div class="space-y-6">
                 <!-- Logo Hexodus (Usando la estructura del Dashboard para el tamaño) -->
                 <div class="flex items-center space-x-3 mb-8">
@@ -98,7 +98,8 @@
         </button>
 
         <!-- CONTENIDO PRINCIPAL -->
-        <main class="flex-1 md:ml-64 p-4 md:p-8 space-y-8">
+        <main class="flex-1 md:ml-64 overflow-y-auto h-screen">
+            <div class="p-4 md:p-8 space-y-8">
             <!-- ENCABEZADO SUPERIOR (IDÉNTICO AL DASHBOARD) -->
             <header class="encabezado-dashboard flex items-center justify-between p-4 rounded-xl sticky top-0 z-10">
                 <h1 class="text-2xl font-bold" style="color: var(--color-azul-acento);">Gestión de Socios (RF07)</h1>
@@ -178,9 +179,9 @@
                         </h2>
 
                         <!-- Contenedor de la Tabla con Scroll -->
-                        <div class="overflow-x-auto tabla-scroll">
+                        <div class="overflow-x-auto overflow-y-auto max-h-96 tabla-scroll border border-gray-700 rounded-lg">
                             <table class="min-w-full divide-y divide-gray-700">
-                                <thead class="bg-gray-700">
+                                <thead class="bg-gray-700 sticky top-0 z-10">
                                     <tr>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-300">
@@ -317,6 +318,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <script type="module" src="/assets/js/socios.js"></script>

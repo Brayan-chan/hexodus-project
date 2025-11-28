@@ -20,7 +20,7 @@
 <body onload="lucide.createIcons()">
     <div class="flex h-screen overflow-hidden">
         <aside
-            class="sidebar fixed z-30 inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out p-4 flex flex-col justify-between">
+            class="sidebar fixed z-30 inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out p-4 flex flex-col justify-between overflow-y-auto">
             <div class="space-y-6">
                 <div class="flex items-center space-x-3 mb-8">
                     <img src="/assets/images/icon.png" alt="Logo" class="h-10 w-10"
@@ -84,9 +84,10 @@
             <i data-lucide="menu" class="w-6 h-6" style="color: var(--color-azul-acento);"></i>
         </button>
         
-        <main class="flex-1 md:ml-64 p-4 md:p-8">
-            <header
-                class="encabezado-dashboard flex items-center justify-between p-4 rounded-xl sticky top-0 z-10 mb-8">
+        <main class="flex-1 md:ml-64 overflow-y-auto h-screen">
+            <div class="p-4 md:p-8">
+                <header
+                    class="encabezado-dashboard flex items-center justify-between p-4 rounded-xl sticky top-0 z-10 mb-8">
                 <h1 class="text-2xl font-bold" style="color: var(--color-azul-acento);">Reportes</h1>
                 <div class="flex items-center space-x-4">
                     <span class="text-sm hidden sm:block" id="fecha-hora-header">Cargando...</span>
@@ -224,9 +225,9 @@
                             </div>
                             
                             <!-- Tabla de datos -->
-                            <div class="tabla-contenedor overflow-x-auto tabla-scroll">
+                            <div class="tabla-contenedor overflow-x-auto overflow-y-auto max-h-96 tabla-scroll border border-gray-700 rounded-lg">
                                 <table id="reporte-table" class="min-w-full divide-y divide-gray-700">
-                                    <thead class="tabla-header" id="reporte-table-head">
+                                    <thead class="tabla-header sticky top-0 z-10" id="reporte-table-head">
                                         <!-- Se llenará dinámicamente -->
                                     </thead>
                                     <tbody class="tabla-body divide-y divide-gray-700" id="reporte-table-body">
@@ -245,6 +246,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </main>
     </div>
